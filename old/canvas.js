@@ -2,7 +2,7 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 const templateImg = new Image();
-templateImg.src = 'templates_images/PatientIDEmpty.png'; // Make sure this file is in the same folder
+templateImg.src = '../templates_images/PatientIDEmpty.png'; // Make sure this file is in the same folder
 templateImg.onload = () => {
   ctx.drawImage(templateImg, 0, 0);
 };
