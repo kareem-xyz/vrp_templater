@@ -1,71 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
+
 <head>
   <meta charset="UTF-8" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-  <title>VRP Image Generator </title>
-  <style>
-    body { font-family: sans-serif; padding: 20px; }
-    canvas { border: 1px solid #ccc; display: block; margin-top: 10px; }
-    label { display: block; margin-top: 10px; }
-  </style>
+  <title>VRP Templater</title>
 </head>
+
+
 <body>
+  <h2>VRP Templater</h2>
 
-<h2>VRP Wristband Generator</h2>
+  <label>Name: <input id="nameInput"></label>
+  <label>DOB: <input id="dobInput"></label>
+  <label>VRP #: <input id="vrpInput"></label>
+  <label>Doctor: <input id="drInput"></label>
 
-<label>Name: <input id="nameInput"></label>
-<label>DOB: <input id="dobInput"></label>
-<label>VRP #: <input id="vrpInput"></label>
-<label>Doctor: <input id="drInput"></label>
+  <button class="btn btn-primary" onclick="generateImage()">Generate</button>
+  <a id="downloadLink" style="display:none" download="VRP_Wristband.png">Download Image</a>
 
-<button class="btn btn-primary" onclick="generateImage()">Generate</button>
-<a id="downloadLink" style="display:none" download="VRP_Wristband.png">Download Image</a>
+  <canvas id="canvas" width="1100" height="600"></canvas>
 
-<canvas id="canvas" width="1100" height="600"></canvas>
-
-<script>
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-
-const templateImg = new Image();
-templateImg.src = 'Templates/PatientIDEmpty.png'; // Make sure this file is in the same folder
-templateImg.onload = () => {
-  ctx.drawImage(templateImg, 0, 0);
-};
-
-function drawCenteredText(text, centerX, centerY, font, color) {
-  ctx.font = font;
-  ctx.fillStyle = color;
-  const metrics = ctx.measureText(text);
-  const textWidth = metrics.width;
-  // Canvas text baseline is by default alphabetic, so adjust
-  const actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-  ctx.fillText(text, centerX - textWidth / 2, centerY + actualHeight / 2);
-}
-
-function generateImage() {
-  // Clear canvas + redraw template
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(templateImg, 0, 0);
-
-  const name = document.getElementById('nameInput').value;
-  const dob = document.getElementById('dobInput').value;
-  const vrp = document.getElementById('vrpInput').value;
-  const dr = document.getElementById('drInput').value;
-
-  // Draw text at specified positions
-  drawCenteredText(name, 550, 335, '50px Arial', 'black');
-  drawCenteredText(dob, 550, 380, '20px Arial', 'black');
-  drawCenteredText(vrp, 550, 410, '20px Arial', 'black');
-  drawCenteredText(dr, 550, 440, '30px Arial', 'black');
-
-  // Show download link
-  const link = document.getElementById('downloadLink');
-  link.href = canvas.toDataURL();
-  link.style.display = 'inline';
-}
-</script>
+  <script src="canvas.js"></script>
 
 </body>
 </html>
