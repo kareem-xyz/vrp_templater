@@ -1,0 +1,58 @@
+{
+  "version": "5.3.0",
+  "backgroundImage": {
+    "src": "templates_images/PatientIDEmpty.png",
+    "left": 0,
+    "top": 0,
+    "originX": "left",
+    "originY": "top",
+    "scaleX": 1,
+    "scaleY": 1
+  },
+  "objects": [
+    {
+      "type": "text",
+      "text": "",
+      "left": 275,
+      "top": 167,
+      "fontSize": 30,
+      "fill": "black",
+      "originX": "center",
+      "originY": "center",
+      "label": "Name"
+    },
+    {
+      "type": "text",
+      "text": "",
+      "left": 275,
+      "top": 190,
+      "fontSize": 16,
+      "fill": "black",
+      "originX": "center",
+      "originY": "center",
+      "label": "DOB"
+    },
+    {
+      "type": "text",
+      "text": "",
+      "left": 275,
+      "top": 210,
+      "fontSize": 16,
+      "fill": "black",
+      "originX": "center",
+      "originY": "center",
+      "label": "VRP"
+    },
+    {
+      "type": "text",
+      "text": "",
+      "left": 275,
+      "top": 235,
+      "fontSize": 20,
+      "fill": "black",
+      "originX": "center",
+      "originY": "center",
+      "label": "Doctor"
+    }
+  ]
+}
