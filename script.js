@@ -46,6 +46,13 @@ const link = document.getElementById('downloadLink');
 link.href = dataURL;
 link.style.display = 'inline';
 }
+function downloadImage() {
+  const dataURL = canvas.toDataURL({ format: 'png', multiplier: 4});
+  const link = document.createElement('a');
+  link.href = dataURL;
+  link.download = 'VRP_Wristband.png';
+  link.click();
+}
 
 // Attach live preview listeners
 document.querySelectorAll('#nameInput, #dobInput, #vrpInput, #drInput').forEach(input => {
