@@ -8,17 +8,25 @@ document.getElementById('imageUpload').addEventListener('change', function(e) {
   const reader = new FileReader();
   reader.onload = function(f) {
     fabric.Image.fromURL(f.target.result, function(img) {
-      const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
-      img.set({
-        scaleX: scale,
-        scaleY: scale,
-        originX: 'left',
-        originY: 'top',
-        textAlign: 'left',
-        left: 0,
-        top: 0
-      });
-      canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+const maxW = 800;
+const maxH = 1000;
+const scale = Math.min(maxW / img.width, maxH / img.height);
+
+canvas.setWidth(img.width * scale);
+canvas.setHeight(img.height * scale);
+
+img.set({
+  scaleX: scale,
+  scaleY: scale,
+  originX: 'left',
+  originY: 'top',
+  left: 0,
+  top: 0
+});
+
+
+canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+
     });
   };
   reader.readAsDataURL(file);
@@ -26,9 +34,9 @@ document.getElementById('imageUpload').addEventListener('change', function(e) {
 
 // Add fields programmatically
 function addField() {
-  const text = new fabric.Text("Text", {
+  const text = new fabric.Text("Field" + (++fieldCount), {
     left: canvas.getWidth() / 2,  // Horizontal center
-    top: 20 + (25 * fieldCount++),                      // Near the top
+    top: 20 + (25 * fieldCount),                      // Near the top
     fontSize: 18,
     fill: 'black',
     originX: 'left',           // Align text center on X
@@ -52,9 +60,17 @@ function updateFieldPanel() {
     const wrapper = document.createElement('div');
     wrapper.className = 'mb-3 p-2 border rounded';
 
+    const labelRow = document.createElement('div');
+    labelRow.className = 'd-flex align-items-center justify-content-between';
+
     const label = document.createElement('label');
     label.innerText = `Field ${index + 1}`;
-    wrapper.appendChild(label);
+    label.className = 'me-2 mb-0';
+    labelRow.appendChild(label);
+
+    const styleButtons = createStyleButtons(obj);
+    labelRow.appendChild(styleButtons);
+    wrapper.appendChild(labelRow);
 
     const nameInput = document.createElement('input');
     nameInput.className = 'form-control mb-1';
@@ -87,6 +103,66 @@ function updateFieldPanel() {
 
     panel.appendChild(wrapper);
   });
+}
+
+function createStyleButtons(obj) {
+  const group = document.createElement('div');
+
+  const styleConfigs = [
+    {
+      label: 'B',
+      prop: 'fontWeight',
+      value: 'bold',
+      style: { fontWeight: 'bold' },
+      toggle: (obj) => {
+        obj.fontWeight = obj.fontWeight === 'bold' ? 'normal' : 'bold';
+      },
+      isActive: (obj) => obj.fontWeight === 'bold'
+    },
+    {
+      label: 'I',
+      prop: 'fontStyle',
+      value: 'italic',
+      style: { fontStyle: 'italic' },
+      toggle: (obj) => {
+        obj.fontStyle = obj.fontStyle === 'italic' ? 'normal' : 'italic';
+      },
+      isActive: (obj) => obj.fontStyle === 'italic'
+    }
+  ];
+
+  styleConfigs.forEach(({ label, style, toggle, isActive }) => {
+    const btn = document.createElement('button');
+    btn.innerText = label;
+    btn.className = 'btn btn-sm btn-outline-dark me-1';
+
+    Object.assign(btn.style, style);
+
+    if (isActive(obj)) btn.classList.add('active');
+
+    btn.onclick = () => {
+      toggle(obj);
+      canvas.renderAll();
+      updateFieldPanel(); // Refresh to update button styles
+    };
+
+    group.appendChild(btn);
+  });
+
+  return group;
+}
+
+
+function getDefaultStyleValue(prop) {
+  switch (prop) {
+    case 'fontWeight':
+    case 'fontStyle':
+      return 'normal';
+    case 'underline':
+      return false;
+    default:
+      return '';
+  }
 }
 
 // Save canvas as JSON

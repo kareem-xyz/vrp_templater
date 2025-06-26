@@ -12,10 +12,6 @@ body {
   justify-content: center;
   position: relative;
 }
-canvas {
-  max-width: 100%;
-  height: auto;
-}
 .live-preview-switch {
   position: absolute;
   top: 10px;
