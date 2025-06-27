@@ -8,9 +8,16 @@ document.getElementById('imageUpload').addEventListener('change', function(e) {
   const reader = new FileReader();
   reader.onload = function(f) {
     fabric.Image.fromURL(f.target.result, function(img) {
-const maxW = 800;
-const maxH = 1000;
-const scale = Math.min(maxW / img.width, maxH / img.height);
+      
+  const container = document.querySelector('.canvas-box');
+  const maxW = container.clientWidth;
+  const maxH = window.innerHeight * 0.8; // Leave some margin below header/buttons
+  let scale = Math.min(maxW / img.width, maxH / img.height);
+
+  // Round to nearest quarter step to reduce floating imprecision
+  scale = Math.round(scale * 4) / 4;
+
+
 
 canvas.setWidth(img.width * scale);
 canvas.setHeight(img.height * scale);
@@ -179,9 +186,63 @@ function saveTemplate() {
 
 // Download current image view
 function downloadImage() {
-  const dataURL = canvas.toDataURL({ format: 'png', multiplier: 4 });
+  const dataURL = canvas.toDataURL({ format: 'png', multiplier: 3 });
   const link = document.createElement('a');
   link.href = dataURL;
   link.download = 'template_image.png';
   link.click();
 }
+
+
+// Under Progress
+// function addRowRegion(x, y, width, height, rowCount = 5) {
+//   const fields = [];
+
+//   const rowHeight = height / rowCount;
+//   for (let i = 0; i < rowCount; i++) {
+//     const text = new fabric.Text(`Row ${i + 1}`, {
+//       left: x + 10,
+//       top: y + i * rowHeight + rowHeight / 4,
+//       fontSize: 16,
+//       fill: 'black',
+//       originX: 'left',
+//       originY: 'top',
+//       hasControls: false,
+//       label: `Row ${i + 1}`
+//     });
+//     fields.push(text);
+//   }
+
+//   const container = new fabric.Rect({
+//     left: x,
+//     top: y,
+//     width,
+//     height,
+//     fill: 'rgba(0, 0, 255, 0.05)',
+//     stroke: 'blue',
+//     strokeDashArray: [5, 5],
+//     selectable: false
+//   });
+
+//   const group = new fabric.Group([container, ...fields], {
+//     left: x,
+//     top: y,
+//     selectable: true,
+//     objectCaching: false,
+//     type: 'rowGroup',
+//     metadata: { rows: rowCount }
+//   });
+
+//   canvas.add(group);
+//   canvas.renderAll();
+// }
+
+// function promptRowRegion() {
+//   const x = 100, y = 100, width = 400, height = 200; // Could use a drawn rectangle in future
+//   const rows = parseInt(prompt("How many rows?"), 10);
+//   if (!isNaN(rows) && rows > 0) {
+//     addRowRegion(x, y, width, height, rows);
+//   }
+// }
+
+
