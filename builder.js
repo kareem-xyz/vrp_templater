@@ -118,23 +118,15 @@ function createStyleButtons(obj) {
   const styleConfigs = [
     {
       label: 'B',
-      prop: 'fontWeight',
-      value: 'bold',
-      style: { fontWeight: 'bold' },
-      toggle: (obj) => {
-        obj.fontWeight = obj.fontWeight === 'bold' ? 'normal' : 'bold';
-      },
-      isActive: (obj) => obj.fontWeight === 'bold'
+      toggle: () => obj.fontWeight = obj.fontWeight === 'bold' ? 'normal' : 'bold',
+      isActive: () => obj.fontWeight === 'bold',
+      style: { fontWeight: 'bold' }
     },
     {
       label: 'I',
-      prop: 'fontStyle',
-      value: 'italic',
-      style: { fontStyle: 'italic' },
-      toggle: (obj) => {
-        obj.fontStyle = obj.fontStyle === 'italic' ? 'normal' : 'italic';
-      },
-      isActive: (obj) => obj.fontStyle === 'italic'
+      toggle: () => obj.fontStyle = obj.fontStyle === 'italic' ? 'normal' : 'italic',
+      isActive: () => obj.fontStyle === 'italic',
+      style: { fontStyle: 'italic' }
     }
   ];
 
@@ -142,22 +134,55 @@ function createStyleButtons(obj) {
     const btn = document.createElement('button');
     btn.innerText = label;
     btn.className = 'btn btn-sm btn-outline-dark me-1';
-
     Object.assign(btn.style, style);
-
-    if (isActive(obj)) btn.classList.add('active');
+    if (isActive()) btn.classList.add('active');
 
     btn.onclick = () => {
-      toggle(obj);
+      toggle();
       canvas.renderAll();
-      updateFieldPanel(); // Refresh to update button styles
+      updateFieldPanel();
     };
-
     group.appendChild(btn);
   });
 
+  // Font selector toggle button
+  const fontBtn = document.createElement('button');
+  fontBtn.innerText = 'Font';
+  fontBtn.className = 'btn btn-sm btn-outline-dark me-1';
+  group.appendChild(fontBtn);
+
+  // Hidden font options panel
+  const fontPicker = document.createElement('div');
+  fontPicker.className = 'mt-2';
+  fontPicker.style.display = 'none';
+
+  const fonts = ['Arial', 'Courier New', 'Times New Roman', 'Georgia', 'Verdana', 'Monospace'];
+  fonts.forEach(font => {
+    const preview = document.createElement('div');
+    preview.innerText = font;
+    preview.style.fontFamily = font;
+    preview.style.cursor = 'pointer';
+    preview.style.padding = '2px 4px';
+    preview.style.border = font === obj.fontFamily ? '1px solid black' : '1px solid transparent';
+
+    preview.onclick = () => {
+      obj.fontFamily = font;
+      canvas.renderAll();
+      updateFieldPanel(); // Refresh to reflect change
+    };
+
+    fontPicker.appendChild(preview);
+  });
+
+  fontBtn.onclick = () => {
+    fontPicker.style.display = fontPicker.style.display === 'none' ? 'block' : 'none';
+  };
+
+  group.appendChild(fontPicker);
+
   return group;
 }
+
 
 
 function getDefaultStyleValue(prop) {

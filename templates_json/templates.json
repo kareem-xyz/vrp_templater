@@ -1,8 +1,5 @@
 [
-  "vrp_wristband.json",
-  "lab.json",
-  "lab2.json",
-  "lab3.json",
   "Patient_Wristband.json",
+  "Patient_Info_General.json",
   "test.json"
 ]
