@@ -216,16 +216,6 @@ function createStyleButtons(obj) {
   };
   group.appendChild(italicBtn);
 
-  // Font family
-  const fontBtn = document.createElement('button');
-  fontBtn.innerText = 'Font';
-  fontBtn.className = 'btn btn-outline-secondary';
-  fontBtn.title = 'Change Font Family';
-  fontBtn.onclick = () => {
-    /* existing font-pick modal code… */
-  };
-  group.appendChild(fontBtn);
-
   // Center-align
   const alignBtn = document.createElement('button');
   alignBtn.innerText = 'C';
