@@ -8,8 +8,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  margin-bottom: 5vh;
-  overflow: hidden; /* Prevent overflow */
+  /* overflow: hidden; Prevent overflow */
 }
 
 .canvas-box canvas {

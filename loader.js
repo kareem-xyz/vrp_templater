@@ -1,5 +1,8 @@
 const canvas = new fabric.Canvas('canvas');
 const liveToggle = document.getElementById('livePreviewToggle');
+let originalBgImg = null
+let originalImageData = null; // Store the base64 image data
+let currentImageScale = 1;
 
 function loadTemplate() {
   const selectedFile = document.getElementById('templateSelector').value;
@@ -8,59 +11,52 @@ function loadTemplate() {
   fetch('templates_json/' + selectedFile)
     .then(response => response.json())
     .then(template => {
-      const bgSrc = template.backgroundImage?.src;
-      if (!bgSrc) return;
+      const bgImg = template.backgroundImage?.src;
+      if (!bgImg) return;
 
-      // 1. Load the Base64 background exactly like builder.js does
-      fabric.Image.fromURL(bgSrc, img => {
-        // 2. Clear old canvas state
-        canvas.clear();
-
-        // 3. Resize canvas to container size
+      fabric.Image.fromURL(bgImg, function(img) {
+        originalBgImg=img;
         const container = document.querySelector('.canvas-box');
-        const containerWidth = container.clientWidth - 10;   // match builder’s −10 padding
-        const containerHeight = container.clientHeight - 10;
-        canvas.setWidth(containerWidth);
-        canvas.setHeight(containerHeight);
+        const maxW = container.clientWidth;
+        const maxH = container.clientHeight; // Leave some margin below header/buttons
+        let scale = Math.min(maxW / img.width, maxH / img.height);
 
-        // 4. Compute scale & centering (same as fitImageToCanvas)
-        const { width: origW, height: origH } = template.backgroundImage;
-        const scale = Math.min(containerWidth / origW, containerHeight / origH);
-        const left  = (containerWidth - origW * scale)  / 2;
-        const top   = (containerHeight - origH * scale) / 2;
+        // Round to nearest quarter step to reduce floating imprecision
+        scale = Math.round(scale * 4) / 4;
+
+
+        // Resize canvas to match scaled background
+        canvas.setWidth((img.width * scale));
+        canvas.setHeight((img.height * scale));
 
         img.set({
           scaleX: scale,
           scaleY: scale,
-          left,
-          top,
           originX: 'left',
           originY: 'top',
-          selectable: false,
-          evented: false
+          left: 0,
+          top: 0
         });
 
-        // 5. Draw background and then reload the rest of the JSON
         canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
 
-        canvas.loadFromJSON(
-          template,
-          // onComplete: adjust coords & render
-          () => {
-            canvas.getObjects().forEach(obj => {
-              if (obj.type !== 'image') obj.setCoords();
-            });
-            canvas.renderAll();
-            populateInputFields();
-          },
-          // reviver: make text selectable again
-          (o, object) => {
-            if (object.type === 'text') object.selectable = true;
+        canvas.loadFromJSON(template, () => {
+          canvas.getObjects().forEach(obj => {
+            if (obj.type !== 'image') {
+              obj.setCoords();
+            }
+          });
+          
+          canvas.renderAll();
+          populateInputFields();
+        }, function(o, object) {
+          if (object.type === 'text') {
+            object.selectable = true;
           }
-        );
+          fitImageToCanvas(originalBgImg);
+        });
       });
-    })
-    .catch(err => console.error('Failed to load template:', err));
+    });
 }
 
 function populateInputFields() {
@@ -123,4 +119,16 @@ document.getElementById('livePreviewToggle').addEventListener('change', () => {
   document.querySelectorAll('#dynamicFields input').forEach(input => {
     input.dispatchEvent(new Event('input'));
   });
+});
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+  initializeCanvas();
+});
+
+// Handle window resize with debouncing
+let resizeTimeout;
+window.addEventListener('resize', function() {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(handleResize, 250);
 });
