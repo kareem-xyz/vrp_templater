@@ -22,21 +22,21 @@ function loadTemplate() {
         let scale = Math.min(maxW / img.width, maxH / img.height);
 
         // Round to nearest quarter step to reduce floating imprecision
-        scale = Math.round(scale * 4) / 4;
+        scale = Math.round(scale * 50) / 50;
 
 
         // Resize canvas to match scaled background
         canvas.setWidth((img.width * scale));
         canvas.setHeight((img.height * scale));
 
-        img.set({
-          scaleX: scale,
-          scaleY: scale,
-          originX: 'left',
-          originY: 'top',
-          left: 0,
-          top: 0
-        });
+        // img.set({
+        //   scaleX: scale,
+        //   scaleY: scale,
+        //   originX: 'left',
+        //   originY: 'top',
+        //   left: 0,
+        //   top: 0
+        // });
 
         canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
 

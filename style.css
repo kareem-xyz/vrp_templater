@@ -5,8 +5,8 @@
   background-color: #f9f9f9;
   border: 1px solid #ccc;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  /* align-items: center;
+  justify-content: center; */
   position: relative;
   /* overflow: hidden; Prevent overflow */
 }

@@ -76,7 +76,10 @@ function updateFieldPanel() {
   const panel = document.getElementById('fieldsPanel');
   panel.innerHTML = '';
   
-  const textObjects = canvas.getObjects('text');
+const textObjects = canvas.getObjects().filter(obj =>
+  obj.type === 'text' || obj.type === 'textbox'
+);
+
   
   if (textObjects.length === 0) {
     panel.innerHTML = '<p class="text-muted">No fields added yet. Upload an image and click "Add Field" to start.</p>';
@@ -105,9 +108,18 @@ function updateFieldPanel() {
     textLabel.innerText = 'Text:';
     textLabel.className = 'form-label mb-1';
     wrapper.appendChild(textLabel);
-    
-    const nameInput = document.createElement('input');
-    nameInput.className = 'form-control mb-2';
+
+    let nameInput;
+    if (obj.type === 'textbox') {
+      nameInput = document.createElement('textarea');
+      nameInput.className = 'form-control mb-2';
+      nameInput.rows = 3;
+    } else {
+      nameInput = document.createElement('input');
+      nameInput.type = 'text';
+      nameInput.className = 'form-control mb-2';
+    }
+
     nameInput.value = obj.text || '';
     nameInput.placeholder = 'Enter field text...';
     nameInput.oninput = () => {
@@ -115,7 +127,9 @@ function updateFieldPanel() {
       obj.label = nameInput.value || `Field ${index + 1}`;
       canvas.renderAll();
     };
+
     wrapper.appendChild(nameInput);
+
 
     // Font size control
     const sizeLabel = document.createElement('label');
@@ -300,26 +314,47 @@ canvas.on('object:modified', function(e) {
   }
 });
 
-// Responsive canvas handling
-function handleResize() {
-  if (!originalBgImg) return;
-  
-  setTimeout(() => {
-    const container = document.querySelector('.canvas-box');
-    const newWidth = container.clientWidth - 10;
-    const newHeight = container.clientHeight - 10;
-    
-    // Only resize if container size actually changed
-    if (Math.abs(canvas.getWidth() - newWidth) > 5 || 
-        Math.abs(canvas.getHeight() - newHeight) > 5) {
-      
-      canvas.setWidth(newWidth);
-      canvas.setHeight(newHeight);
-      fitImageToCanvas(originalBgImg);
+function addTextArea() {
+  if (!originalBgImg) {
+    alert('Please upload an image first');
+    return;
+  }
 
-    }
-  }, 100);
+  fieldCount++;
+
+  const bgImg = canvas.backgroundImage;
+  const startX = bgImg.left + 20;
+  const startY = bgImg.top + 20 + (fieldCount * 40);
+
+  const textbox = new fabric.Textbox(`Textarea ${fieldCount}`, {
+    left: startX,
+    top: startY,
+    width: 400 * currentImageScale, // enable automatic line wrapping
+    fontSize: 120 * currentImageScale,
+    fill: 'black',
+    fontFamily: 'Arial',
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    originX: 'left',
+    originY: 'top',
+    hasControls: true,
+    hasBorders: true,
+    label: `Textarea ${fieldCount}`,
+    textAlign: 'left'
+  });
+
+  textbox.originalData = {
+    left: startX,
+    top: startY,
+    fontSize: 120 * currentImageScale
+  };
+
+  canvas.add(textbox);
+  canvas.setActiveObject(textbox);
+  canvas.renderAll();
+  updateFieldPanel();
 }
+
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
