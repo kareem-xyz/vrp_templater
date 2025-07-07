@@ -1,6 +1,8 @@
 [
   "Patient_Wristband.json",
   "Patient_Info_General.json",
-  "test2.json",
-  "MAR.json"
+  "test3.json",
+  "Physician_Order_0.1.json",
+  "MAR.json",
+  "hawthorne.json"
 ]
