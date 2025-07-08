@@ -1,14 +1,15 @@
 currentImageScale=1;
-fw=0;
-fh=0;
 
 // Initialize canvas with container constraints the same as canvas-box, which is constrained by Bootstrap col
 function initializeCanvas() {
   const container = document.querySelector('.canvas-box');
   const containerWidth = container.clientWidth; // Account for scaling rounding, which can slightly cause overflow
   const containerHeight = container.clientHeight;
-  canvas.setWidth(containerWidth);
-  canvas.setHeight(containerHeight);
+
+  canvas.setDimensions({
+  width: containerWidth,
+  height: containerHeight
+})
   canvas.renderAll();
 
   return [containerWidth, containerHeight];
@@ -16,18 +17,16 @@ function initializeCanvas() {
 
 // Fit image within the fixed canvas bounds
 function fitImageToCanvas(img) {
-  [x,y] = initializeCanvas();
   const canvasWidth = canvas.getWidth();
   const canvasHeight = canvas.getHeight();
   
   // Calculate scale to fit image within canvas bounds
   let scale = Math.min(
     canvasWidth / img.width, 
-    /*canvasHeight / img.height*/
+    canvasHeight / img.height
   );
     scale = scale.toFixed(7);
   // Store the current scale for object positioning
-  const scaleRatio = scale / currentImageScale;
   currentImageScale = scale;
   
   // Center the image in the canvas
@@ -35,8 +34,8 @@ function fitImageToCanvas(img) {
   const top = 0;
   
   img.set({
-    scaleX:img.scaleX * scale,
-    scaleY:img.scaleY * scale,
+    scaleX: scale,
+    scaleY: scale,
     left: left,
     top: top,
     originX: 'left',
@@ -47,18 +46,23 @@ function fitImageToCanvas(img) {
   
   // Scale existing text objects proportionally
   rescaleTextObjects(scale);
-  
+  let newW = img.width * scale;
+  let newH = img.height * scale;
+
+  canvas.setDimensions({
+    width: newW,
+    height: newH
+  }, false)
+
   canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
-  canvas.setWidth(img.width * scale);
-  canvas.setHeight(img.height * scale);
+  // canvas.setZoom(scale);
   canvas.renderAll();
-  console.log(x, y, canvas.getWidth(), canvas.getHeight(), img.width * scale, img.height* scale)
+  console.log(canvas.getWidth(), canvas.getHeight(), img.width * scale, img.height* scale)
   return scale;
 }
 
 // Rescale all text objects when image scale changes
 function rescaleTextObjects(scaleRatio) {
-  // if (Math.abs(scaleRatio - 1) < 0.000001) return; // No significant change
   
   canvas.getObjects('text').forEach(obj => {
     // Store original data if not already stored
@@ -71,10 +75,12 @@ function rescaleTextObjects(scaleRatio) {
     }
     
     // Scale position and size
+    let old_scale = obj.scaleX;
     obj.set({
-      left: obj.left * scaleRatio,
-      top: obj.top * scaleRatio,
-      fontSize: obj.fontSize * scaleRatio
+      left: obj.left * scaleRatio / old_scale,
+      top: obj.top * scaleRatio / old_scale,
+      scaleX: scaleRatio,
+      scaleY: scaleRatio
     });
     
     obj.setCoords();

@@ -2,7 +2,6 @@ const canvas = new fabric.Canvas('builderCanvas');
 let fieldCount = 0;
 let originalBgImg = null;
 let originalImageData = null; // Store the base64 image data
-let currentImageScale = 1;
 
 // Image upload handler
 document.getElementById('imageUpload').addEventListener('change', function(e) {
@@ -44,9 +43,11 @@ function addField() {
   const startY = bgImg.top + 20;
   
   const text = new fabric.Text(`Field ${fieldCount}`, {
+    scaleX: currentImageScale,
+    scaleY: currentImageScale,
     left: startX,
     top: startY,
-    fontSize: 60 * currentImageScale,
+    fontSize: 100,
     fill: 'black',
     fontFamily: 'Arial',
     fontWeight: 'normal',
@@ -62,7 +63,7 @@ function addField() {
   text.originalData = {
     left: startX,
     top: startY,
-    fontSize: 60 * currentImageScale
+    fontSize: 100
   };
   
   canvas.add(text);
@@ -326,10 +327,12 @@ function addTextArea() {
   const startY = bgImg.top + 20;
 
   const textbox = new fabric.Textbox(`Textarea ${fieldCount}`, {
+    scaleX: currentImageScale,
+    scaleY: currentImageScale,
     left: startX,
     top: startY,
     width: 400, // enable automatic line wrapping
-    fontSize: 60,
+    fontSize: 100 * currentImageScale,
     fill: 'black',
     fontFamily: 'Arial',
     fontWeight: 'normal',
@@ -345,7 +348,7 @@ function addTextArea() {
   textbox.originalData = {
     left: startX,
     top: startY,
-    fontSize: 60
+    fontSize: 100 * currentImageScale
   };
 
   canvas.add(textbox);

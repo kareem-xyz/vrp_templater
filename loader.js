@@ -13,53 +13,27 @@ function loadTemplate() {
     .then(template => {
       const bgImg = template.backgroundImage?.src;
       if (!bgImg) return;
-
-      fabric.Image.fromURL(bgImg, function(img) {
-        originalBgImg=img;
-        // const container = document.querySelector('.canvas-box');
-        // const maxW = container.clientWidth;
-        // const maxH = container.clientHeight; // Leazyyyyve some margin below header/buttons
-        // let scale = Math.min(maxW / img.width, maxH / img.height);
-        // //currentImageScale=scale;
-
-        // // Round to nearest quarter step to reduce floating imprecision
-        // // scale = Math.round(scale * 4) / 4;
-
-
-        // // Resize canvas to match scaled background
-        // canvas.setWidth((img.width * scale));
-        // canvas.setHeight((img.height * scale));
-
-        // // img.set({
-        // //   scaleX: scale,
-        // //   scaleY: scale,
-        // //   originX: 'left',
-        // //   originY: 'top',
-        // //   left: 0,
-        // //   top: 0
-        // // });
-
-        // canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
-
-        canvas.loadFromJSON(template, () => {
-
+      canvas.loadFromJSON(template, () => {
+        fabric.Image.fromURL(bgImg, function(img) {
+          originalBgImg=img;
+          fitImageToCanvas(img);
           canvas.getObjects().forEach(obj => {
-            if (obj.type !== 'image') {
+            if (obj.type == 'text') {
               obj.setCoords();
             }
           });
-        
+          
           populateInputFields();
-        }, function(o, object) {
-          if (object.type === 'text') {
-            object.selectable = true;
-            
-          }
+
+          }, 
+            function(o, object) {
+              if (object.type === 'text') {
+              object.selectable = true;  
+              }
         });
-        fitImageToCanvas(img);
-        canvas.renderAll();
       });
     });
+    canvas.renderAll();
 }
 
 function populateInputFields() {
@@ -96,7 +70,7 @@ function generateImage() {
 }
 
 function downloadImage() {
-  const dataURL = canvas.toDataURL({ format: 'png', multiplier: 2 });
+  const dataURL = canvas.toDataURL({ format: 'png', multiplier: 4 });
   const link = document.createElement('a');
   link.href = dataURL;
   link.download = 'filled_template.png';
