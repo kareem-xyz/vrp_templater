@@ -41,12 +41,12 @@ function addField() {
   // Calculate position relative to image bounds
   const bgImg = canvas.backgroundImage;
   const startX = bgImg.left + 20;
-  const startY = bgImg.top + 20 + (fieldCount * 30);
+  const startY = bgImg.top + 20;
   
   const text = new fabric.Text(`Field ${fieldCount}`, {
     left: startX,
     top: startY,
-    fontSize: 120 * currentImageScale,
+    fontSize: 60 * currentImageScale,
     fill: 'black',
     fontFamily: 'Arial',
     fontWeight: 'normal',
@@ -62,7 +62,7 @@ function addField() {
   text.originalData = {
     left: startX,
     top: startY,
-    fontSize: 120 * currentImageScale
+    fontSize: 60 * currentImageScale
   };
   
   canvas.add(text);
@@ -287,7 +287,6 @@ function downloadImage() {
   
   const dataURL = canvas.toDataURL({
     format: 'png',
-    quality: 1,
     multiplier: 2 // Higher resolution export
   });
   
@@ -324,13 +323,13 @@ function addTextArea() {
 
   const bgImg = canvas.backgroundImage;
   const startX = bgImg.left + 20;
-  const startY = bgImg.top + 20 + (fieldCount * 40);
+  const startY = bgImg.top + 20;
 
   const textbox = new fabric.Textbox(`Textarea ${fieldCount}`, {
     left: startX,
     top: startY,
-    width: 400 * currentImageScale, // enable automatic line wrapping
-    fontSize: 120 * currentImageScale,
+    width: 400, // enable automatic line wrapping
+    fontSize: 60,
     fill: 'black',
     fontFamily: 'Arial',
     fontWeight: 'normal',
@@ -346,7 +345,7 @@ function addTextArea() {
   textbox.originalData = {
     left: startX,
     top: startY,
-    fontSize: 120 * currentImageScale
+    fontSize: 60
   };
 
   canvas.add(textbox);
@@ -363,8 +362,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Handle window resize with debouncing
-let resizeTimeout;
-window.addEventListener('resize', function() {
-  clearTimeout(resizeTimeout);
-  resizeTimeout = setTimeout(handleResize, 250);
-});
+// let resizeTimeout;
+// window.addEventListener('resize', function() {
+//   clearTimeout(resizeTimeout);
+//   resizeTimeout = setTimeout(handleResize, 250);
+// });

@@ -1,27 +1,31 @@
+currentImageScale=1;
+fw=0;
+fh=0;
 
-// Initialize canvas with container constraints
+// Initialize canvas with container constraints the same as canvas-box, which is constrained by Bootstrap col
 function initializeCanvas() {
   const container = document.querySelector('.canvas-box');
-  const containerWidth = container.clientWidth - 10; // Account for padding/border
-  const containerHeight = container.clientHeight - 10;
-  
+  const containerWidth = container.clientWidth; // Account for scaling rounding, which can slightly cause overflow
+  const containerHeight = container.clientHeight;
   canvas.setWidth(containerWidth);
   canvas.setHeight(containerHeight);
   canvas.renderAll();
+
+  return [containerWidth, containerHeight];
 }
 
 // Fit image within the fixed canvas bounds
 function fitImageToCanvas(img) {
-
+  [x,y] = initializeCanvas();
   const canvasWidth = canvas.getWidth();
   const canvasHeight = canvas.getHeight();
   
   // Calculate scale to fit image within canvas bounds
-  const scale = Math.min(
+  let scale = Math.min(
     canvasWidth / img.width, 
-    canvasHeight / img.height
+    /*canvasHeight / img.height*/
   );
-  
+    scale = scale.toFixed(7);
   // Store the current scale for object positioning
   const scaleRatio = scale / currentImageScale;
   currentImageScale = scale;
@@ -31,8 +35,8 @@ function fitImageToCanvas(img) {
   const top = 0;
   
   img.set({
-    scaleX: scale,
-    scaleY: scale,
+    scaleX:img.scaleX * scale,
+    scaleY:img.scaleY * scale,
     left: left,
     top: top,
     originX: 'left',
@@ -42,18 +46,19 @@ function fitImageToCanvas(img) {
   });
   
   // Scale existing text objects proportionally
-  rescaleTextObjects(scaleRatio);
+  rescaleTextObjects(scale);
   
   canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
   canvas.setWidth(img.width * scale);
   canvas.setHeight(img.height * scale);
   canvas.renderAll();
+  console.log(x, y, canvas.getWidth(), canvas.getHeight(), img.width * scale, img.height* scale)
   return scale;
 }
 
 // Rescale all text objects when image scale changes
 function rescaleTextObjects(scaleRatio) {
-  if (Math.abs(scaleRatio - 1) < 0.001) return; // No significant change
+  // if (Math.abs(scaleRatio - 1) < 0.000001) return; // No significant change
   
   canvas.getObjects('text').forEach(obj => {
     // Store original data if not already stored
@@ -78,20 +83,19 @@ function rescaleTextObjects(scaleRatio) {
 
 // Responsive canvas handling
 function handleResize() {
-//   if (!originalBgImg) return; 
+  if (!originalBgImg) return; 
   setTimeout(() => {
     const container = document.querySelector('.canvas-box');
-    const newWidth = container.clientWidth - 10;
-    const newHeight = container.clientHeight - 10;
+    const newWidth = container.clientWidth;
+    const newHeight = container.clientHeight;
     
     // Only resize if container size actually changed
-    if (Math.abs(canvas.getWidth() - newWidth) > 5 || 
-        Math.abs(canvas.getHeight() - newHeight) > 5) {
+    if (Math.abs(canvas.getWidth() - newWidth) > 1.0 || 
+        Math.abs(canvas.getHeight() - newHeight) > 1.0) {
       
       canvas.setWidth(newWidth);
       canvas.setHeight(newHeight);
       fitImageToCanvas(originalBgImg);
-
     }
   }, 100);
 }

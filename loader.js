@@ -2,9 +2,9 @@ const canvas = new fabric.Canvas('canvas');
 const liveToggle = document.getElementById('livePreviewToggle');
 let originalBgImg = null
 let originalImageData = null; // Store the base64 image data
-let currentImageScale = 1;
 
 function loadTemplate() {
+  initializeCanvas();
   const selectedFile = document.getElementById('templateSelector').value;
   if (!selectedFile) return;
 
@@ -16,45 +16,48 @@ function loadTemplate() {
 
       fabric.Image.fromURL(bgImg, function(img) {
         originalBgImg=img;
-        const container = document.querySelector('.canvas-box');
-        const maxW = container.clientWidth;
-        const maxH = container.clientHeight; // Leave some margin below header/buttons
-        let scale = Math.min(maxW / img.width, maxH / img.height);
+        // const container = document.querySelector('.canvas-box');
+        // const maxW = container.clientWidth;
+        // const maxH = container.clientHeight; // Leazyyyyve some margin below header/buttons
+        // let scale = Math.min(maxW / img.width, maxH / img.height);
+        // //currentImageScale=scale;
 
-        // Round to nearest quarter step to reduce floating imprecision
-        scale = Math.round(scale * 50) / 50;
+        // // Round to nearest quarter step to reduce floating imprecision
+        // // scale = Math.round(scale * 4) / 4;
 
 
-        // Resize canvas to match scaled background
-        canvas.setWidth((img.width * scale));
-        canvas.setHeight((img.height * scale));
+        // // Resize canvas to match scaled background
+        // canvas.setWidth((img.width * scale));
+        // canvas.setHeight((img.height * scale));
 
-        // img.set({
-        //   scaleX: scale,
-        //   scaleY: scale,
-        //   originX: 'left',
-        //   originY: 'top',
-        //   left: 0,
-        //   top: 0
-        // });
+        // // img.set({
+        // //   scaleX: scale,
+        // //   scaleY: scale,
+        // //   originX: 'left',
+        // //   originY: 'top',
+        // //   left: 0,
+        // //   top: 0
+        // // });
 
-        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+        // canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
 
         canvas.loadFromJSON(template, () => {
+
           canvas.getObjects().forEach(obj => {
             if (obj.type !== 'image') {
               obj.setCoords();
             }
           });
-          
-          canvas.renderAll();
+        
           populateInputFields();
         }, function(o, object) {
           if (object.type === 'text') {
             object.selectable = true;
+            
           }
-          fitImageToCanvas(originalBgImg);
         });
+        fitImageToCanvas(img);
+        canvas.renderAll();
       });
     });
 }
@@ -62,7 +65,7 @@ function loadTemplate() {
 function populateInputFields() {
   const form = document.getElementById('dynamicFields');
   form.innerHTML = '';
-  canvas.getObjects('text').forEach(obj => {
+  canvas.getObjects("text" || "textarea").forEach(obj => {
     const label = document.createElement('label');
     label.className = 'form-label mt-2';
     label.innerText = obj.label || 'Field';
@@ -93,7 +96,7 @@ function generateImage() {
 }
 
 function downloadImage() {
-  const dataURL = canvas.toDataURL({ format: 'png', multiplier: 3 });
+  const dataURL = canvas.toDataURL({ format: 'png', multiplier: 2 });
   const link = document.createElement('a');
   link.href = dataURL;
   link.download = 'filled_template.png';
@@ -130,5 +133,5 @@ document.addEventListener('DOMContentLoaded', function() {
 let resizeTimeout;
 window.addEventListener('resize', function() {
   clearTimeout(resizeTimeout);
-  resizeTimeout = setTimeout(handleResize, 250);
+  // resizeTimeout = setTimeout(handleResize, 100);
 });
