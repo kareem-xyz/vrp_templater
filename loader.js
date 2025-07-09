@@ -1,6 +1,6 @@
 const canvas = new fabric.Canvas('canvas');
 const liveToggle = document.getElementById('livePreviewToggle');
-let originalBgImg = null
+let originalBgImg = null;
 let originalImageData = null; // Store the base64 image data
 
 function loadTemplate(selectedFile="") {
@@ -9,6 +9,8 @@ function loadTemplate(selectedFile="") {
   // If passed filename
   if (!selectedFile){
     selectedFile = document.getElementById('templateSelector').value;
+    const old = document.getElementById('subTemplateSelector');
+    if (old) old.remove();
     if (!selectedFile) return;
   }
 
@@ -37,7 +39,7 @@ function loadTemplate(selectedFile="") {
         fileList.forEach(file => {
           const option = document.createElement('option');
           option.value = selectedFile + file;
-          option.textContent = file;
+          option.textContent = file.replace('.json', '').replace(/_/g, ' ')
           subSelector.appendChild(option);
         });
 
@@ -83,12 +85,21 @@ function loadTemplate(selectedFile="") {
 function populateInputFields() {
   const form = document.getElementById('dynamicFields');
   form.innerHTML = '';
-  canvas.getObjects("text" || "textarea").forEach(obj => {
+  canvas.getObjects().forEach(obj => {
     const label = document.createElement('label');
     label.className = 'form-label mt-2';
     label.innerText = obj.label || 'Field';
 
-    const input = document.createElement('input');
+    let input;
+    if (obj.type == "text") {
+    input = document.createElement('input');
+    }
+
+    else if (obj.type == "textbox") {
+    input = document.createElement('textarea');
+    input.rows = 4;
+    }
+
     input.type = 'text';
     input.className = 'form-control';
     input.value = obj.text || '';

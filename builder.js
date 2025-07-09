@@ -332,7 +332,7 @@ function addTextArea() {
     left: startX,
     top: startY,
     width: 400, // enable automatic line wrapping
-    fontSize: 100 * currentImageScale,
+    fontSize: 100,
     fill: 'black',
     fontFamily: 'Arial',
     fontWeight: 'normal',
@@ -348,7 +348,7 @@ function addTextArea() {
   textbox.originalData = {
     left: startX,
     top: startY,
-    fontSize: 100 * currentImageScale
+    fontSize: 100
   };
 
   canvas.add(textbox);

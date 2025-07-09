@@ -64,7 +64,9 @@ function fitImageToCanvas(img) {
 // Rescale all text objects when image scale changes
 function rescaleTextObjects(scaleRatio) {
   
-  canvas.getObjects('text').forEach(obj => {
+  canvas.getObjects().filter(obj =>
+  obj.type === 'text' || obj.type === 'textbox'
+  ).forEach(obj => {
     // Store original data if not already stored
     if (!obj.originalData) {
       obj.originalData = {
@@ -220,109 +222,5 @@ function handleResize() {
 //     clearTimeout(resizeTimeout);
 //     resizeTimeout = setTimeout(handleResize, 250);
 //   });
-  
-//   return handleResize; // Return the function for manual calls
-// }
 
-// // Create style toggle buttons (Bold, Italic, Font, Center-align)
-// function createStyleButtons(canvas, obj, updatePanelCallback) {
-//   const group = document.createElement('div');
-//   group.className = 'btn-group btn-group-sm';
 
-//   // Bold
-//   const boldBtn = document.createElement('button');
-//   boldBtn.innerHTML = '<strong>B</strong>';
-//   boldBtn.className = `btn btn-outline-secondary ${obj.fontWeight === 'bold' ? 'active' : ''}`;
-//   boldBtn.title = 'Toggle Bold';
-//   boldBtn.onclick = () => {
-//     obj.set('fontWeight', obj.fontWeight === 'bold' ? 'normal' : 'bold');
-//     canvas.renderAll();
-//     if (updatePanelCallback) updatePanelCallback();
-//   };
-//   group.appendChild(boldBtn);
-
-//   // Italic
-//   const italicBtn = document.createElement('button');
-//   italicBtn.innerHTML = '<em>I</em>';
-//   italicBtn.className = `btn btn-outline-secondary ${obj.fontStyle === 'italic' ? 'active' : ''}`;
-//   italicBtn.title = 'Toggle Italic';
-//   italicBtn.onclick = () => {
-//     obj.set('fontStyle', obj.fontStyle === 'italic' ? 'normal' : 'italic');
-//     canvas.renderAll();
-//     if (updatePanelCallback) updatePanelCallback();
-//   };
-//   group.appendChild(italicBtn);
-
-//   // Font family
-//   const fontBtn = document.createElement('button');
-//   fontBtn.innerText = 'Font';
-//   fontBtn.className = 'btn btn-outline-secondary';
-//   fontBtn.title = 'Change Font Family';
-//   fontBtn.onclick = () => {
-//     // Font selection modal logic would go here
-//     console.log('Font selection not implemented yet');
-//   };
-//   group.appendChild(fontBtn);
-
-//   // Center-align
-//   const alignBtn = document.createElement('button');
-//   alignBtn.innerText = 'C';
-//   alignBtn.className = `btn btn-outline-secondary ${obj.textAlign === 'center' ? 'active' : ''}`;
-//   alignBtn.title = 'Toggle Center Align';
-//   alignBtn.onclick = () => {
-//     const newAlign = obj.textAlign === 'center' ? 'left' : 'center';
-//     obj.set('textAlign', newAlign);
-//     obj.set({
-//       originX: newAlign === 'center' ? 'center' : 'left'
-//     });
-//     canvas.renderAll();
-//     if (updatePanelCallback) updatePanelCallback();
-//   };
-//   group.appendChild(alignBtn);
-
-//   return group;
-// }
-
-// // Save template as JSON (builder specific but could be generalized)
-// function saveTemplateAsJSON(canvas, filename = 'template.json') {
-//   // Export the full canvas state. Include any extra props (e.g. 'label').
-//   const jsonObj = canvas.toJSON(['label']);
-
-//   // Convert to string with indentation for readability
-//   const jsonStr = JSON.stringify(jsonObj, null, 2);
-
-//   // Build a Blob and temporary download link
-//   const blob = new Blob([jsonStr], { type: 'application/json' });
-//   const url  = URL.createObjectURL(blob);
-//   const link = document.createElement('a');
-
-//   link.href     = url;
-//   link.download = filename;
-//   document.body.appendChild(link);
-
-//   // Trigger download
-//   link.click();
-
-//   // Clean up
-//   document.body.removeChild(link);
-//   URL.revokeObjectURL(url);
-// }
-
-// // Load template list from JSON file
-// function loadTemplateList(selector, templatesPath = 'templates_json/templates.json') {
-//   return fetch(templatesPath)
-//     .then(res => res.json())
-//     .then(files => {
-//       files.forEach(file => {
-//         const option = document.createElement('option');
-//         option.value = file;
-//         option.textContent = file.replace('.json', '').replace(/_/g, ' ');
-//         selector.appendChild(option);
-//       });
-//       return files;
-//     })
-//     .catch(err => {
-//       console.error("Failed to load template list:", err);
-//       throw err;
-//     });
-// }
