@@ -3,11 +3,55 @@ const liveToggle = document.getElementById('livePreviewToggle');
 let originalBgImg = null
 let originalImageData = null; // Store the base64 image data
 
-function loadTemplate() {
+function loadTemplate(selectedFile="") {
   initializeCanvas();
-  const selectedFile = document.getElementById('templateSelector').value;
-  if (!selectedFile) return;
 
+  // If passed filename
+  if (!selectedFile){
+    selectedFile = document.getElementById('templateSelector').value;
+    if (!selectedFile) return;
+  }
+
+  // If folder (must include / and templates.json file inside)
+  if (!selectedFile.includes('.json') && selectedFile.endsWith("/")) {
+    // Fetch the list of files inside the folder (expected JSON array)
+    fetch('templates_json/' + selectedFile + 'templates.json') // Assumes index.json lists files
+      .then(res => res.json())
+      .then(fileList => {
+        // Remove old sub-selector if it exists
+          const old = document.getElementById('subTemplateSelector');
+          if (old) old.remove();
+        // Create new select element
+        const subSelector = document.createElement('select');
+        subSelector.id = 'subTemplateSelector';
+        subSelector.className = 'form-select mt-2'; // Add Bootstrap styling if using it
+
+        // Add placeholder option
+        const defaultOption = document.createElement('option');
+        defaultOption.textContent = '-- Select sub-template --';
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        subSelector.appendChild(defaultOption);
+
+        // Add options from file list
+        fileList.forEach(file => {
+          const option = document.createElement('option');
+          option.value = selectedFile + file;
+          option.textContent = file;
+          subSelector.appendChild(option);
+        });
+
+        subSelector.addEventListener('change', () => {
+        // Set full path as the selected value of #templateSelector for consistency
+        const fullPath = subSelector.value;
+        loadTemplate(fullPath); // Trigger same logic as main selector
+        });
+        document.getElementById("selector-div").appendChild(subSelector)
+      });
+      return;
+  }
+
+  // Actual file path
   fetch('templates_json/' + selectedFile)
     .then(response => response.json())
     .then(template => {

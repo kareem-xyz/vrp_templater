@@ -51,7 +51,7 @@
       "pathStartOffset": 0,
       "pathSide": "left",
       "pathAlign": "baseline",
-      "label": "Last, First"
+      "label": "Patient Name"
     },
     {
       "type": "text",
@@ -59,7 +59,7 @@
       "originX": "center",
       "originY": "top",
       "left": 178.91,
-      "top": 103.91,
+      "top": 109,
       "width": 120.25,
       "height": 66.69,
       "fill": "#002541",
@@ -87,8 +87,8 @@
       "skewY": 0,
       "fontFamily": "Arial",
       "fontWeight": "bold",
-      "fontSize": 59.016923,
-      "text": "Title",
+      "fontSize": 55,
+      "text": "",
       "underline": false,
       "overline": false,
       "linethrough": false,
@@ -111,7 +111,7 @@
       "originX": "left",
       "originY": "top",
       "left": 78.97,
-      "top": 139.87,
+      "top": 138.87,
       "width": 271.49,
       "height": 53.08,
       "fill": "#002541",
@@ -140,7 +140,7 @@
       "fontFamily": "Arial",
       "fontWeight": "normal",
       "fontSize": 46.972653,
-      "text": "Male/Female",
+      "text": "Male",
       "underline": false,
       "overline": false,
       "linethrough": false,
@@ -155,7 +155,7 @@
       "pathStartOffset": 0,
       "pathSide": "left",
       "pathAlign": "baseline",
-      "label": "Male/Female"
+      "label": "Gender"
     },
     {
       "type": "text",
@@ -163,7 +163,7 @@
       "originX": "left",
       "originY": "top",
       "left": 201.9,
-      "top": 139.87,
+      "top": 138.87,
       "width": 183.69,
       "height": 53.08,
       "fill": "#002541",
@@ -207,7 +207,7 @@
       "pathStartOffset": 0,
       "pathSide": "left",
       "pathAlign": "baseline",
-      "label": "00 Years"
+      "label": "Age"
     },
     {
       "type": "text",
@@ -259,7 +259,7 @@
       "pathStartOffset": 0,
       "pathSide": "left",
       "pathAlign": "baseline",
-      "label": "mm/dd/yyyy"
+      "label": "Date of Birth"
     },
     {
       "type": "text",
@@ -267,7 +267,7 @@
       "originX": "left",
       "originY": "top",
       "left": 102.95,
-      "top": 183.83,
+      "top": 182.83,
       "width": 117.55,
       "height": 53.08,
       "fill": "#002541",
@@ -311,7 +311,7 @@
       "pathStartOffset": 0,
       "pathSide": "left",
       "pathAlign": "baseline",
-      "label": "00/00"
+      "label": "Room / Bed"
     },
     {
       "type": "text",
@@ -319,7 +319,7 @@
       "originX": "left",
       "originY": "top",
       "left": 282.85,
-      "top": 183.83,
+      "top": 182.83,
       "width": 78.3,
       "height": 53.08,
       "fill": "#002541",
@@ -363,7 +363,7 @@
       "pathStartOffset": 0,
       "pathSide": "left",
       "pathAlign": "baseline",
-      "label": "N/A"
+      "label": "Infection"
     },
     {
       "type": "text",
@@ -371,7 +371,7 @@
       "originX": "left",
       "originY": "top",
       "left": 105.95,
-      "top": 225.78,
+      "top": 224.78,
       "width": 75.69,
       "height": 53.08,
       "fill": "#002541",
@@ -415,7 +415,7 @@
       "pathStartOffset": 0,
       "pathSide": "left",
       "pathAlign": "baseline",
-      "label": "Full"
+      "label": "Code Status"
     },
     {
       "type": "text",
@@ -423,7 +423,7 @@
       "originX": "left",
       "originY": "top",
       "left": 281.85,
-      "top": 225.78,
+      "top": 224.78,
       "width": 78.3,
       "height": 53.08,
       "fill": "#002541",
@@ -467,7 +467,7 @@
       "pathStartOffset": 0,
       "pathSide": "left",
       "pathAlign": "baseline",
-      "label": "N/A"
+      "label": "Isolation"
     },
     {
       "type": "text",
@@ -519,7 +519,7 @@
       "pathStartOffset": 0,
       "pathSide": "left",
       "pathAlign": "baseline",
-      "label": "N/A"
+      "label": "Disability Accomodations"
     },
     {
       "type": "text",
@@ -527,7 +527,7 @@
       "originX": "left",
       "originY": "top",
       "left": 320.83,
-      "top": 267.74,
+      "top": 266.74,
       "width": 201.08,
       "height": 53.08,
       "fill": "#002541",
@@ -571,7 +571,7 @@
       "pathStartOffset": 0,
       "pathSide": "left",
       "pathAlign": "baseline",
-      "label": "Jane Doe"
+      "label": "Attending Nurse"
     },
     {
       "type": "text",
@@ -579,7 +579,7 @@
       "originX": "left",
       "originY": "top",
       "left": 111.95,
-      "top": 309.69,
+      "top": 308.69,
       "width": 107.06,
       "height": 53.08,
       "fill": "#002541",
@@ -623,7 +623,7 @@
       "pathStartOffset": 0,
       "pathSide": "left",
       "pathAlign": "baseline",
-      "label": "Adult"
+      "label": "Patient Class"
     },
     {
       "type": "text",
@@ -631,7 +631,7 @@
       "originX": "left",
       "originY": "top",
       "left": 100.95,
-      "top": 351.65,
+      "top": 350.65,
       "width": 78.3,
       "height": 53.08,
       "fill": "#002541",
@@ -675,7 +675,7 @@
       "pathStartOffset": 0,
       "pathSide": "left",
       "pathAlign": "baseline",
-      "label": "N/A"
+      "label": "Active FYIs"
     },
     {
       "type": "text",
@@ -683,7 +683,7 @@
       "originX": "left",
       "originY": "top",
       "left": 91.96,
-      "top": 401.6,
+      "top": 400.6,
       "width": 78.3,
       "height": 53.08,
       "fill": "#002541",
@@ -727,7 +727,7 @@
       "pathStartOffset": 0,
       "pathSide": "left",
       "pathAlign": "baseline",
-      "label": "N/A"
+      "label": "Allergies"
     },
     {
       "type": "text",
@@ -735,7 +735,7 @@
       "originX": "left",
       "originY": "top",
       "left": 258.86,
-      "top": 401.6,
+      "top": 400.6,
       "width": 78.3,
       "height": 53.08,
       "fill": "#002541",
@@ -763,7 +763,7 @@
       "skewY": 0,
       "fontFamily": "Arial",
       "fontWeight": "normal",
-      "fontSize": 46.972653,
+      "fontSize": 46.972,
       "text": "N/A",
       "underline": false,
       "overline": false,
@@ -779,59 +779,7 @@
       "pathStartOffset": 0,
       "pathSide": "left",
       "pathAlign": "baseline",
-      "label": "N/A"
-    },
-    {
-      "type": "text",
-      "version": "5.1.0",
-      "originX": "left",
-      "originY": "top",
-      "left": 259.86,
-      "top": 433.56,
-      "width": 449.83,
-      "height": 81.66,
-      "fill": "black",
-      "stroke": null,
-      "strokeWidth": 1,
-      "strokeDashArray": null,
-      "strokeLineCap": "butt",
-      "strokeDashOffset": 0,
-      "strokeLineJoin": "miter",
-      "strokeUniform": false,
-      "strokeMiterLimit": 4,
-      "scaleX": 0.24,
-      "scaleY": 0.24,
-      "angle": 0,
-      "flipX": false,
-      "flipY": false,
-      "opacity": 1,
-      "shadow": null,
-      "visible": true,
-      "backgroundColor": "",
-      "fillRule": "nonzero",
-      "paintFirst": "fill",
-      "globalCompositeOperation": "source-over",
-      "skewX": 0,
-      "skewY": 0,
-      "fontFamily": "Arial",
-      "fontWeight": "normal",
-      "fontSize": 72.26562,
-      "text": "0.00 m (0.0 ft)",
-      "underline": false,
-      "overline": false,
-      "linethrough": false,
-      "textAlign": "left",
-      "fontStyle": "normal",
-      "lineHeight": 1.16,
-      "textBackgroundColor": "",
-      "charSpacing": 0,
-      "styles": {},
-      "direction": "ltr",
-      "path": null,
-      "pathStartOffset": 0,
-      "pathSide": "left",
-      "pathAlign": "baseline",
-      "label": "0.00 m (0.0 ft)"
+      "label": "PCB"
     },
     {
       "type": "text",
@@ -839,7 +787,7 @@
       "originX": "left",
       "originY": "top",
       "left": 70.97,
-      "top": 433.56,
+      "top": 432.56,
       "width": 502.15,
       "height": 81.66,
       "fill": "black",
@@ -883,7 +831,59 @@
       "pathStartOffset": 0,
       "pathSide": "left",
       "pathAlign": "baseline",
-      "label": "00.0 kg (000 lb)"
+      "label": "Weight"
+    },
+    {
+      "type": "text",
+      "version": "5.1.0",
+      "originX": "left",
+      "originY": "top",
+      "left": 259.86,
+      "top": 432.56,
+      "width": 449.83,
+      "height": 81.66,
+      "fill": "black",
+      "stroke": null,
+      "strokeWidth": 1,
+      "strokeDashArray": null,
+      "strokeLineCap": "butt",
+      "strokeDashOffset": 0,
+      "strokeLineJoin": "miter",
+      "strokeUniform": false,
+      "strokeMiterLimit": 4,
+      "scaleX": 0.24,
+      "scaleY": 0.24,
+      "angle": 0,
+      "flipX": false,
+      "flipY": false,
+      "opacity": 1,
+      "shadow": null,
+      "visible": true,
+      "backgroundColor": "",
+      "fillRule": "nonzero",
+      "paintFirst": "fill",
+      "globalCompositeOperation": "source-over",
+      "skewX": 0,
+      "skewY": 0,
+      "fontFamily": "Arial",
+      "fontWeight": "normal",
+      "fontSize": 72.26562,
+      "text": "0.00 m (0.0 ft)",
+      "underline": false,
+      "overline": false,
+      "linethrough": false,
+      "textAlign": "left",
+      "fontStyle": "normal",
+      "lineHeight": 1.16,
+      "textBackgroundColor": "",
+      "charSpacing": 0,
+      "styles": {},
+      "direction": "ltr",
+      "path": null,
+      "pathStartOffset": 0,
+      "pathSide": "left",
+      "pathAlign": "baseline",
+      "label": "Height"
     },
     {
       "type": "text",

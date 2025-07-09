@@ -1,15 +1,5 @@
 [
-  "Patient_Wristband.json",
-  "Patient_Info_General.json",
-  "Physician_Order_0.1.json",
+  "Wristband.json",
   "MAR.json",
-  "hawthorne.json",
-  "test.json",
-  "test1.json",
-  "test2.json",
-  "test3.json",
-  "test8.json",
-  "test5.json",
-  "test4.json",
-  "test6.json"
+  "Patients_Info/"
 ]
