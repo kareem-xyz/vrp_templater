@@ -108,119 +108,39 @@ function handleResize() {
   }, 100);
 }
 
-// /////////////////////////OOOLLLLLLDDD
-// /**
-//  * Shared Canvas Utilities for Template Builder and Loader
-//  */
-
-// // Initialize canvas with container constraints
-// function initializeCanvas(canvas) {
-//   const container = document.querySelector('.canvas-box');
-//   const containerWidth = container.clientWidth - 10; // Account for padding/border
-//   const containerHeight = container.clientHeight - 10;
-  
-//   canvas.setWidth(containerWidth);
-//   canvas.setHeight(containerHeight);
-//   canvas.renderAll();
-// }
-
-// // Fit image within the fixed canvas bounds
-// function fitImageToCanvas(canvas, img) {
-//   const canvasWidth = canvas.getWidth();
-//   const canvasHeight = canvas.getHeight();
-  
-//   // Calculate scale to fit image within canvas bounds
-//   const scale = Math.min(
-//     canvasWidth / img.width, 
-//     canvasHeight / img.height
-//   );
-  
-//   // Position the image in the top left corner
-//   const left = 0;
-//   const top =0;
-  
-//   img.set({
-//     scaleX: scale,
-//     scaleY: scale,
-//     left: left,
-//     top: top,
-//     originX: 'left',
-//     originY: 'top',
-//     selectable: false, // Prevent background image from being selected
-//     evented: false // Prevent background image from receiving events
-//   });
-  
-//   return scale; // Return the scale for scaling other objects
-// }
-
-// // Scale all text objects in a canvas proportionally, given ratio
-// function rescaleTextObjects(canvas, scaleRatio) {
-//   if (Math.abs(scaleRatio - 1) < 0.001) return;
-
-//   canvas.getObjects('text').forEach(obj => {
-//     if (!obj.originalData) {
-//       obj.originalData = {
-//         fontSize: obj.fontSize
-//       };
-//     }
-
-//     const newFontSize = obj.originalData.fontSize * scaleRatio;
-//     obj.set({
-//       fontSize: newFontSize
-//     });
-//     obj.setCoords();
-//   });
-// }
-
-
-// // Download current canvas as image
-// function downloadCanvasImage(canvas, filename = 'canvas-image.png') {
-//   const dataURL = canvas.toDataURL({
-//     format: 'png',
-//     quality: 1,
-//     multiplier: 2 // Higher resolution export
-//   });
-  
-//   const a = document.createElement('a');
-//   a.href = dataURL;
-//   a.download = filename;
-//   document.body.appendChild(a);
-//   a.click();
-//   document.body.removeChild(a);
-// }
-
-// // Responsive canvas handling with debouncing
-// function setupResponsiveCanvas(canvas, originalBgImg = null, currentImageScale = 1) {
-//   function handleResize() {
-//     setTimeout(() => {
-//       const container = document.querySelector('.canvas-box');
-//       const newWidth = container.clientWidth - 10;
-//       const newHeight = container.clientHeight - 10;
+/*
+                Old Handle resize function
+// Responsive canvas handling with debouncing
+function setupResponsiveCanvas(canvas, originalBgImg = null, currentImageScale = 1) {
+  function handleResize() {
+    setTimeout(() => {
+      const container = document.querySelector('.canvas-box');
+      const newWidth = container.clientWidth - 10;
+      const newHeight = container.clientHeight - 10;
         
-//         canvas.setWidth(newWidth);
-//         canvas.setHeight(newHeight);
+        canvas.setWidth(newWidth);
+        canvas.setHeight(newHeight);
         
-//         // If there's a background image, refit it
-//         const bgImg = originalBgImg || canvas.backgroundImage;
-//         if (bgImg) {
-//           const newScale = fitImageToCanvas(canvas, bgImg);
-//           canvas.setBackgroundImage(bgImg, canvas.renderAll.bind(canvas));
+        // If there's a background image, refit it
+        const bgImg = originalBgImg || canvas.backgroundImage;
+        if (bgImg) {
+          const newScale = fitImageToCanvas(canvas, bgImg);
+          canvas.setBackgroundImage(bgImg, canvas.renderAll.bind(canvas));
           
-//           // Scale existing objects proportionally
-//           const scaleRatio = newScale / currentImageScale;
-//           rescaleTextObjects(canvas, scaleRatio);
-//           currentImageScale = newScale;
+          // Scale existing objects proportionally
+          const scaleRatio = newScale / currentImageScale;
+          rescaleTextObjects(canvas, scaleRatio);
+          currentImageScale = newScale;
           
-//           canvas.renderAll();
-//     }
-//     }, 100);
-//   }
+          canvas.renderAll();
+    }
+    }, 100);
+  }
 
-//   // Handle window resize with debouncing
-//   let resizeTimeout;
-//   window.addEventListener('resize', function() {
-//     clearTimeout(resizeTimeout);
-//     resizeTimeout = setTimeout(handleResize, 250);
-//   });
-
-
+  // Handle window resize with debouncing
+  let resizeTimeout;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(handleResize, 250);
+  });
+  */
