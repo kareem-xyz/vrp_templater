@@ -155,7 +155,7 @@
       "pathStartOffset": 0,
       "pathSide": "left",
       "pathAlign": "baseline",
-      "label": "DOB: mm/dd/yy"
+      "label": "Date of Birth"
     },
     {
       "type": "text",
@@ -207,7 +207,7 @@
       "pathStartOffset": 0,
       "pathSide": "left",
       "pathAlign": "baseline",
-      "label": "Dr. J. Smith"
+      "label": "Dr. Name"
     }
   ],
   "backgroundImage": {
