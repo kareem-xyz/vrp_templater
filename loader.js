@@ -1,4 +1,4 @@
-const canvas = new fabric.Canvas('canvas');
+let canvas = new fabric.Canvas('canvas');
 const liveToggle = document.getElementById('livePreviewToggle');
 let originalBgImg = null;
 let originalImageData = null; // Store the base64 image data
@@ -68,7 +68,7 @@ function loadTemplate(selectedFile="") {
               obj.setCoords();
             }
           });
-          
+          canvas = UpdateCustomValues(canvas); // currently only used for multipage updates.
           populateInputFields();
 
           }, 
@@ -124,8 +124,9 @@ function generateImage() {
   canvas.renderAll();
 }
 
-function downloadImage() {
-  const dataURL = canvas.toDataURL({ format: 'png', multiplier: 4 });
+function downloadImage(_canvas=null) {
+  if (!_canvas) {_canvas = canvas}
+  const dataURL = _canvas.toDataURL({ format: 'png', multiplier: 4 });
   const link = document.createElement('a');
   link.href = dataURL;
   link.download = 'filled_template.png';
