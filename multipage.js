@@ -7,9 +7,9 @@ function confirmMultipage(fabricCanvas) {
     return false;
   }
 
-  // Confirm Template is multipager, and has a multipage object
-  if (!fabricCanvas.multipage_template) {
-    console.error("Template/Canvas is not of multipage type");
+  // Confirm Template is multipager and has multipaging enabled.
+  if (!(fabricCanvas.multipage_template && fabricCanvas.multipage_enabled)) {
+    console.error("Template/Canvas is not of multipage type, or multipage is not enabled.");
     return false;
   }
 
@@ -43,7 +43,6 @@ function processPages(fabricCanvas, desiredHeight=null) {
   const wrappedLines = targetbox._textLines.map(line => line.join(''));
   const lineHeight = targetbox.getHeightOfLine(0);
   const lineGroups = processTextbox(wrappedLines, desiredHeight, lineHeight);
-
 
   lineGroups.forEach(element => {
     let tempCanvas = fabricCanvas;
@@ -86,11 +85,31 @@ function downloadCanvas(fabricCanvas=null) {
   console.log("Downloading single page\n")
 }
 
+// Particularly related to the multipage feature.
 function UpdateCustomValues(fabricCanvas) {
   fabricCanvas.getObjects().forEach(obj => {
     if (obj.type === "textbox" && obj.multipage_text == true) {
-      obj.multipage_height = obj.height;
+      // Show the controls for multipage. On by default.
+      const mpdiv = document.getElementById('multipage-div');
+      const mpswitch = document.getElementById("multipage-switch");
+
+      mpdiv.hidden = false;
+      mpswitch.checked = true;
+
+      // Deny Graphical Scaling because it messes up the height/scale x/y values.
+      obj.set({
+      multipage_height: obj.height,
+      lockScalingX: true,
+      lockScalingY: true,
+      hasControls: true,
+      });
     }
   });
   return fabricCanvas;
 }
+
+let mpswitch = document.getElementById("multipage-switch");
+mpswitch.addEventListener('change', function () {
+  canvas.multipage_enabled = mpswitch.checked;
+  console.log("Multi-page mode:", canvas.multipage_enabled);
+});
