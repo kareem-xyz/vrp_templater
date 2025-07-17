@@ -2,6 +2,8 @@ let canvas = new fabric.Canvas('canvas');
 const liveToggle = document.getElementById('livePreviewToggle');
 let originalBgImg = null;
 let originalImageData = null; // Store the base64 image data
+let multipage_enabled = false;
+let multipage_template = false;
 
 function loadTemplate(selectedFile="") {
   initializeCanvas();
@@ -57,6 +59,8 @@ function loadTemplate(selectedFile="") {
   fetch('templates_json/' + selectedFile)
     .then(response => response.json())
     .then(template => {
+      // Useful for download
+      canvas.title = selectedFile.replace(".json", "");
       const bgImg = template.backgroundImage?.src;
       if (!bgImg) return;
       canvas.loadFromJSON(template, () => {
@@ -124,12 +128,14 @@ function generateImage() {
   canvas.renderAll();
 }
 
-function downloadImage(_canvas=null) {
+function downloadImage({_canvas=null, title=null} = {}) {
   if (!_canvas) {_canvas = canvas}
   const dataURL = _canvas.toDataURL({ format: 'png', multiplier: 4 });
   const link = document.createElement('a');
   link.href = dataURL;
-  link.download = 'filled_template.png';
+  let finalTitle = title || _canvas.title || "chart";
+  finalTitle = finalTitle.replace(".json","").replace("(Multi-Page)","");
+  link.download = finalTitle + ".png";
   link.click();
 }
 

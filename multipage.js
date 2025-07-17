@@ -1,5 +1,4 @@
 
-
 function confirmMultipage(fabricCanvas) {
     // Safety
   if (!fabricCanvas) {
@@ -8,8 +7,8 @@ function confirmMultipage(fabricCanvas) {
   }
 
   // Confirm Template is multipager and has multipaging enabled.
-  if (!(fabricCanvas.multipage_template && fabricCanvas.multipage_enabled)) {
-    console.error("Template/Canvas is not of multipage type, or multipage is not enabled.");
+  if (!(fabricCanvas.multipage_template)) {
+    console.log("Template/Canvas is not of multipage type, or multipage is not enabled.");
     return false;
   }
 
@@ -43,11 +42,12 @@ function processPages(fabricCanvas, desiredHeight=null) {
   const wrappedLines = targetbox._textLines.map(line => line.join(''));
   const lineHeight = targetbox.getHeightOfLine(0);
   const lineGroups = processTextbox(wrappedLines, desiredHeight, lineHeight);
+  const numPages = lineGroups.length;
 
-  lineGroups.forEach(element => {
-    let tempCanvas = fabricCanvas;
-    tempCanvas.getObjects()[targetIndex].text = element;
-    downloadImage()
+  lineGroups.forEach((page, currPage) => {
+    fabricCanvas.getObjects()[targetIndex].text = page;
+    let title = `${fabricCanvas.title} page(${currPage+1}-${numPages})`;
+    downloadImage({title:title});
   });
   return true;
 }
@@ -87,14 +87,23 @@ function downloadCanvas(fabricCanvas=null) {
 
 // Particularly related to the multipage feature.
 function UpdateCustomValues(fabricCanvas) {
+  let mpdiv = document.getElementById('multipage-div');
+  let mpswitch = document.getElementById("multipage-switch");
+
+  if (!confirmMultipage(fabricCanvas)) {
+      mpdiv.hidden = true;
+      mpswitch.checked = false;
+      fabricCanvas.multipage_enabled = false;
+      fabricCanvas.multipage_template = false;
+      return fabricCanvas;
+    }
+
   fabricCanvas.getObjects().forEach(obj => {
     if (obj.type === "textbox" && obj.multipage_text == true) {
       // Show the controls for multipage. On by default.
-      const mpdiv = document.getElementById('multipage-div');
-      const mpswitch = document.getElementById("multipage-switch");
-
       mpdiv.hidden = false;
       mpswitch.checked = true;
+      fabricCanvas.multipage_enabled = true;
 
       // Deny Graphical Scaling because it messes up the height/scale x/y values.
       obj.set({
