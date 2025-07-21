@@ -108,10 +108,20 @@ function populateInputFields() {
     input.className = 'form-control';
     input.value = obj.text || '';
 
+    let debounceTimer;
+
     input.addEventListener('input', () => {
-      obj.text = input.value;
-      canvas.renderAll();
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        const { cleanText, styles } = parseMarkdownToStyledText(input.value);
+
+        obj.text = cleanText;
+        obj.styles = styles;
+
+        canvas.renderAll();
+      }, 500); // wait 300 ms after user stops typing
     });
+
 
     form.appendChild(label);
     form.appendChild(input);
