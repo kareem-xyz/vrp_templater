@@ -4,5 +4,6 @@
   "Standing_Order (Multi-Page).json",
   "Alert_Bands.json",
   "Patients_Info/",
-  "Physician_Orders/"
+  "Physician_Orders/",
+  "labs_test.json"
 ]

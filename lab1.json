@@ -1,0 +1,44 @@
+{
+  "templateId": "blood-work-basic",
+  "templateName": "Basic Blood Work Panel",
+  "version": "1.0",
+  "tables": {
+    "t1": {
+      "id": "t1",
+      "name": "",
+      "max_rows": 22,
+      "columns": {
+        "name": {
+          "textbox_id": "t1_name",
+          "type": "name",
+          "data": [
+            "Hemoglobin",
+            "Hematocrit", 
+            "White Blood Count",
+            "Platelet Count"
+          ]
+        },
+        "value": {
+          "textbox_id": "t1_val",
+          "type": "value",
+          "data": [
+            "14.2",
+            "42.1",
+            "7.8",
+            "285"
+          ]
+        },
+        "reference": {
+          "textbox_id": "t1_ref_val",
+          "type": "reference",
+          "data": [
+            "12.0-15.5 g/dL",
+            "36-46%",
+            "4.5-11.0 K/μL",
+            "150-450 K/μL"
+          ]
+        }
+      }
+    }
+  }
+}

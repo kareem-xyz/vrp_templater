@@ -1,0 +1,30 @@
+{
+    "Lab1Title":{
+        "id":"Lab1",
+        "title":"Lab1",
+        "rows":{
+            "names":[
+                "Row1Name",
+                "Row2Name"
+            ],
+            "ref_vals":[
+                "Row1Ref1",
+                "Row2Ref2"
+            ]
+        }
+    },
+    "Lab2Title":{
+        "id":"Lab2",
+        "title":"Lab2",
+        "rows":{
+            "names":[
+                "Row1Name",
+                "Row2Name"
+            ],
+            "ref_vals":[
+                "Row1Ref1",
+                "Row2Ref2"
+            ]
+        }
+    }
+}

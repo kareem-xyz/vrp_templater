@@ -4,6 +4,7 @@ let originalBgImg = null;
 let originalImageData = null; // Store the base64 image data
 let multipage_enabled = false;
 let multipage_template = false;
+let labs_enabled = false;
 
 function loadTemplate(selectedFile="") {
   initializeCanvas();
@@ -73,6 +74,11 @@ function loadTemplate(selectedFile="") {
             }
           });
           canvas = UpdateCustomValues(canvas); // currently only used for multipage updates.
+          if (template.type == "lab"){
+            canvas.type = "lab";
+            canvas.lab_objects = template.lab_objects;
+            loadLab(canvas);
+          } 
           populateInputFields();
 
           }, 
@@ -83,6 +89,7 @@ function loadTemplate(selectedFile="") {
         });
       });
     });
+
     canvas.renderAll();
 }
 
