@@ -106,8 +106,16 @@ function addLabData(labId) {
     return;
   }
 
+
+  // Push title
   // Prepare row data
   const rowsData = [];
+  rowsData.push({
+    name: `-- ${lab.title} --`,
+    reference:'',
+    value: ''
+  })
+
   for (let i = 0; i < rowCount; i++) {
     rowsData.push({
       name: names[i] || '',
@@ -115,6 +123,13 @@ function addLabData(labId) {
       value: ''
     });
   }
+
+  // push emtpy end
+    rowsData.push({
+    name: '',
+    reference:'',
+    value: ''
+  })
 
   try {
     // Check if we have any tables with space

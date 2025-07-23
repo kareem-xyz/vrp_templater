@@ -81,7 +81,8 @@ class LabColumn {
    * Clear data at multiple rows
    */
   clearDataRange(startRow, endRow) {
-    this.textbox.textLines.splice(startRow, endRow - startRow + 1);
+    // Has to remove title row, and empty end row.
+    this.textbox.textLines.splice(startRow, endRow - startRow);
     this.updateTextboxDisplay();
 
   }

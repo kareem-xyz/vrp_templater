@@ -1,30 +1,112 @@
 {
-    "Lab1Title":{
-        "id":"Lab1",
-        "title":"Lab1",
-        "rows":{
-            "names":[
-                "Row1Name",
-                "Row2Name"
-            ],
-            "ref_vals":[
-                "Row1Ref1",
-                "Row2Ref2"
-            ]
-        }
-    },
-    "Lab2Title":{
-        "id":"Lab2",
-        "title":"Lab2",
-        "rows":{
-            "names":[
-                "Row1Name",
-                "Row2Name"
-            ],
-            "ref_vals":[
-                "Row1Ref1",
-                "Row2Ref2"
-            ]
-        }
+  "Comprehensive Metabolic Panel": {
+    "id": "ComprehensiveMetabolicPanel",
+    "title": "Comprehensive Metabolic Panel",
+    "rows": {
+      "names": [
+        "Sodium mmol/L",
+        "Potassium mmol/L",
+        "Chloride mmol/L",
+        "CO2 mmol/L",
+        "Glucose mg/dL",
+        "BUN mg/dL",
+        "Creat",
+        "Albumin g/dL",
+        "Alk Phos",
+        "Anion Gap",
+        "Bicarbonate (mmol/L)",
+        "AST (u/L)",
+        "Calcium (mg/dL)",
+        "Total Protein 7 (g/dL)",
+        "ALT (U/L)",
+        "CGT (U/L)",
+        "Magnesium (mg/dL)"
+      ],
+      "ref_vals": [
+        "135-145",
+        "3.5 - 5.5",
+        "98-107",
+        "22-30",
+        "65-179",
+        "7-21",
+        "0.70-1.3",
+        "3.5 - 5.0",
+        "38-126.0",
+        "9-26",
+        "22 - 28",
+        "19-55",
+        "8.5-10.2",
+        "6.5-8.3",
+        "19-72",
+        "9-48",
+        "1.7-2.2"
+      ]
     }
+  },
+  "CBC": {
+    "id": "CBC",
+    "title": "CBC",
+    "rows": {
+      "names": [
+        "Red Blood Cells",
+        "Hemoglobin",
+        "Hematocrit",
+        "White Blood Cells",
+        "Platelet"
+      ],
+      "ref_vals": [
+        "5 - 9",
+        "12.1-15.1",
+        "36-48 %",
+        "4.5-11",
+        "150-450"
+      ]
+    }
+  },
+  "C-Reactive Protein (CRP) mg/L": {
+    "id": "CRP",
+    "title": "C-Reactive Protein (CRP) mg/L",
+    "rows": {
+      "names": [
+        "C-Reactive Protein (CRP) mg/L"
+      ],
+      "ref_vals": [
+        "0.3 - 1.0"
+      ]
+    }
+  },
+  "Erythrocyte Sedimentation Rate mm/hr": {
+    "id": "ESR",
+    "title": "Erythrocyte Sedimentation Rate mm/hr",
+    "rows": {
+      "names": [
+        "Erythrocyte Sedimentation Rate mm/hr"
+      ],
+      "ref_vals": [
+        "0-30"
+      ]
+    }
+  },
+  "Venous Blood Gas (VBG)": {
+    "id": "VBG",
+    "title": "Venous Blood Gas (VBG)",
+    "rows": {
+      "names": [
+        "pH",
+        "PCO2 (mmHg)",
+        "PO2 (mmHg)",
+        "HCO3 (mEq/L)",
+        "Saturation (%)",
+        "Lactate (mmol/L)"
+      ],
+      "ref_vals": [
+        "7.31-7.41",
+        "41-51",
+        "40-60",
+        "22-28",
+        "60-80",
+        "0.6 - 2.2"
+      ]
+    }
+  }
 }
