@@ -12,9 +12,9 @@ class LabColumn {
     this.tableId = options.tableId || '';
     this.maxRows = options.maxRows || 50;
     
-    // Initialize textlines if not present
-    if (!this.textbox.textlines) {
-      this.textbox.textlines = [];
+    // Initialize textLines if not present
+    if (!this.textbox.textLines) {
+      this.textbox.textLines = [];
     }
   }
 
@@ -22,7 +22,7 @@ class LabColumn {
    * Get the current number of rows with data
    */
   getCurrentRowCount() {
-    return this.textbox.textlines.length;
+    return this.textbox.textLines.length;
   }
 
   /**
@@ -33,12 +33,12 @@ class LabColumn {
       throw new Error(`Row index ${rowIndex} out of bounds (0-${this.maxRows - 1})`);
     }
 
-    // Extend textlines array if necessary
-    while (this.textbox.textlines.length <= rowIndex) {
-      this.textbox.textlines.push('');
+    // Extend textLines array if necessary
+    while (this.textbox.textLines.length <= rowIndex) {
+      this.textbox.textLines.push('');
     }
 
-    this.textbox.textlines[rowIndex] = value.toString();
+    this.textbox.textLines[rowIndex] = value.toString();
     this.updateTextboxDisplay();
     return true;
   }
@@ -47,12 +47,12 @@ class LabColumn {
    * Append data to the next available row
    */
   appendData(value) {
-    const nextRowIndex = this.textbox.textlines.length;
+    const nextRowIndex = this.textbox.textLines.length;
     if (nextRowIndex >= this.maxRows) {
       throw new Error(`Maximum rows (${this.maxRows}) reached`);
     }
     
-    this.textbox.textlines.push(value.toString());
+    this.textbox.textLines.push(value.toString());
     this.updateTextboxDisplay();
     return nextRowIndex;
   }
@@ -61,27 +61,36 @@ class LabColumn {
    * Get data at specified row
    */
   getData(rowIndex) {
-    if (rowIndex < 0 || rowIndex >= this.textbox.textlines.length) {
+    if (rowIndex < 0 || rowIndex >= this.textbox.textLines.length) {
       return '';
     }
-    return this.textbox.textlines[rowIndex] || '';
+    return this.textbox.textLines[rowIndex] || '';
   }
 
   /**
    * Clear data at specified row
    */
   clearData(rowIndex) {
-    if (rowIndex >= 0 && rowIndex < this.textbox.textlines.length) {
-      this.textbox.textlines[rowIndex] = '';
+    if (rowIndex >= 0 && rowIndex < this.textbox.textLines.length) {
+      this.textbox.textLines.splice(rowIndex, 1);
       this.updateTextboxDisplay();
     }
   }
 
   /**
-   * Update the fabric textbox display based on textlines
+   * Clear data at multiple rows
+   */
+  clearDataRange(startRow, endRow) {
+    this.textbox.textLines.splice(startRow, endRow - startRow + 1);
+    this.updateTextboxDisplay();
+
+  }
+
+  /**
+   * Update the fabric textbox display based on textLines
    */
   updateTextboxDisplay() {
-    const displayText = this.textbox.textlines.join('\n');
+    const displayText = this.textbox.textLines.join('\n');
     this.textbox.set('text', displayText);
     if (this.textbox.canvas) {
       this.textbox.canvas.renderAll();
@@ -97,8 +106,7 @@ class LabColumn {
       columnType: this.columnType,
       tableId: this.tableId,
       maxRows: this.maxRows,
-      textlines: [...this.textbox.textlines],
-      // Store reference to textbox (you might use object ID or custom identifier)
+      textLines: [...this.textbox.textLines],
       textboxId: this.textbox.id || null
     };
   }
@@ -111,18 +119,301 @@ class LabColumn {
     this.columnType = data.columnType || this.columnType;
     this.tableId = data.tableId || this.tableId;
     this.maxRows = data.maxRows || this.maxRows;
-    this.textbox.textlines = [...(data.textlines || [])];
+    this.textbox.textLines = [...(data.textLines || [])];
     this.updateTextboxDisplay();
   }
 }
 
 /**
- * LabTemplate class - manages tables and their columns, referencing existing fabric objects
+ * LabTable class - manages a single table and its columns
+ */
+class LabTable {
+  constructor(tableId, options = {}) {
+    this.id = tableId;
+    this.name = options.name || tableId;
+    this.maxRows = options.maxRows || 50;
+    this.columns = {
+      name: null,
+      value: null,
+      reference: null
+    };
+    this.columnInstances = new Map();
+    
+    // Track which labs occupy which rows
+    this.labOccupancy = new Map(); // labId -> { startRow, endRow, rowIndices[] }
+  }
+
+  /**
+   * Add a column to this table
+   */
+  addColumn(columnType, fabricTextbox, columnOptions = {}) {
+    if (!['name', 'value', 'reference'].includes(columnType)) {
+      throw new Error(`Invalid column type: ${columnType}`);
+    }
+
+    if (this.columns[columnType]) {
+      throw new Error(`Column type ${columnType} already exists in table ${this.id}`);
+    }
+
+    const columnId = `${this.id}_${columnType}`;
+    const column = new LabColumn(fabricTextbox, {
+      ...columnOptions,
+      columnName: columnId,
+      columnType: columnType,
+      tableId: this.id,
+      maxRows: this.maxRows
+    });
+
+    this.columns[columnType] = columnId;
+    this.columnInstances.set(columnId, column);
+
+    return column;
+  }
+
+  /**
+   * Get column by type
+   */
+  getColumn(columnType) {
+    const columnId = this.columns[columnType];
+    return columnId ? this.columnInstances.get(columnId) : null;
+  }
+
+  /**
+   * Get all columns
+   */
+  getAllColumns() {
+    const result = {};
+    Object.entries(this.columns).forEach(([type, columnId]) => {
+      if (columnId) {
+        result[type] = this.columnInstances.get(columnId);
+      }
+    });
+    return result;
+  }
+
+  /**
+   * Get the current row count (max across all columns)
+   */
+  getCurrentRowCount() {
+    let maxRows = 0;
+    this.columnInstances.forEach(column => {
+      maxRows = Math.max(maxRows, column.getCurrentRowCount());
+    });
+    return maxRows;
+  }
+
+  /**
+   * Get the first empty row
+   */
+  getFirstEmptyRow() {
+    return this.getCurrentRowCount();
+  }
+
+  /**
+   * Check if table has enough space for additional rows
+   */
+  hasSpaceFor(rowCount) {
+    return this.getCurrentRowCount() + rowCount <= this.maxRows;
+  }
+
+  /**
+   * Check if table is full
+   */
+  isFull() {
+    return this.getCurrentRowCount() >= this.maxRows;
+  }
+
+  /**
+   * Get available space in table
+   */
+  getAvailableSpace() {
+    return this.maxRows - this.getCurrentRowCount();
+  }
+
+  /**
+   * Insert a row of data and track lab occupancy
+   */
+  insertRow(rowData, rowIndex = null, labId = null) {
+    const targetRow = rowIndex !== null ? rowIndex : this.getFirstEmptyRow();
+    
+    if (targetRow >= this.maxRows) {
+      throw new Error(`Cannot insert row at index ${targetRow}, table is full`);
+    }
+
+    const columns = this.getAllColumns();
+
+    // Insert data into each column
+    Object.entries(rowData).forEach(([columnType, value]) => {
+      const column = columns[columnType];
+      if (column && value !== undefined) {
+        column.insertData(targetRow, value);
+      }
+    });
+
+    // Track lab occupancy if labId provided
+    if (labId) {
+      this.trackLabRow(labId, targetRow);
+    }
+
+    return targetRow;
+  }
+
+  /**
+   * Insert multiple rows for a lab
+   */
+  insertLabRows(labId, rowsData) {
+    if (!this.hasSpaceFor(rowsData.length)) {
+      throw new Error(`Not enough space for ${rowsData.length} rows`);
+    }
+
+    const insertedRows = [];
+    const startRow = this.getFirstEmptyRow();
+
+    for (let i = 0; i < rowsData.length; i++) {
+      const rowIndex = this.insertRow(rowsData[i], null, labId);
+      insertedRows.push(rowIndex);
+    }
+
+    // Update lab occupancy with complete range
+    this.labOccupancy.set(labId, {
+      startRow: startRow,
+      endRow: startRow + rowsData.length - 1,
+      rowIndices: insertedRows
+    });
+
+    return insertedRows;
+  }
+
+  /**
+   * Track which row a lab occupies
+   */
+  trackLabRow(labId, rowIndex) {
+    if (!this.labOccupancy.has(labId)) {
+      this.labOccupancy.set(labId, {
+        startRow: rowIndex,
+        endRow: rowIndex,
+        rowIndices: [rowIndex]
+      });
+    } else {
+      const occupancy = this.labOccupancy.get(labId);
+      occupancy.rowIndices.push(rowIndex);
+      occupancy.startRow = Math.min(occupancy.startRow, rowIndex);
+      occupancy.endRow = Math.max(occupancy.endRow, rowIndex);
+    }
+  }
+
+  /**
+   * Remove a lab's data from the table
+   */
+  removeLab(labId) {
+    if (!this.labOccupancy.has(labId)) {
+      console.warn(`Lab ${labId} not found in table ${this.id}`);
+      return false;
+    }
+
+    const occupancy = this.labOccupancy.get(labId);
+    const columns = this.getAllColumns();
+
+    // Clear data from all columns for the lab's rows
+    const indices = occupancy.rowIndices;
+    if (!indices || indices.length === 0) return;
+
+    const min = Math.min(...indices);
+    const max = Math.max(...indices);
+
+    Object.values(columns).forEach(column => {
+      if (column) {
+        column.clearDataRange(min, max);
+      }
+    });
+
+    // Remove lab from occupancy tracking
+    this.labOccupancy.delete(labId);
+    
+    return true;
+  }
+
+  /**
+   * Get row data
+   */
+  getRow(rowIndex) {
+    const columns = this.getAllColumns();
+    const rowData = {};
+
+    Object.entries(columns).forEach(([type, column]) => {
+      if (column) {
+        rowData[type] = column.getData(rowIndex);
+      }
+    });
+
+    return rowData;
+  }
+
+  /**
+   * Check if a lab is in this table
+   */
+  hasLab(labId) {
+    return this.labOccupancy.has(labId);
+  }
+
+  /**
+   * Get lab occupancy info
+   */
+  getLabOccupancy(labId) {
+    return this.labOccupancy.get(labId);
+  }
+
+  /**
+   * Export table data
+   */
+  exportData() {
+    const columnsData = {};
+    this.columnInstances.forEach((column, columnId) => {
+      columnsData[column.columnType] = column.exportData();
+    });
+
+    return {
+      id: this.id,
+      name: this.name,
+      maxRows: this.maxRows,
+      columns: this.columns,
+      columnsData: columnsData,
+      labOccupancy: Object.fromEntries(this.labOccupancy)
+    };
+  }
+
+  /**
+   * Load table data
+   */
+  loadData(data, textboxes) {
+    this.name = data.name || this.name;
+    this.maxRows = data.maxRows || this.maxRows;
+    
+    // Restore lab occupancy
+    if (data.labOccupancy) {
+      this.labOccupancy = new Map(Object.entries(data.labOccupancy));
+    }
+
+    // Recreate columns
+    Object.entries(data.columnsData || {}).forEach(([columnType, columnData]) => {
+      const matchingTextbox = textboxes.find(tb => tb.id === columnData.textboxId);
+      
+      if (matchingTextbox) {
+        const column = this.addColumn(columnType, matchingTextbox, {
+          maxRows: columnData.maxRows
+        });
+        column.loadData(columnData);
+      }
+    });
+  }
+}
+
+/**
+ * LabTemplate class - manages multiple tables
  */
 class LabTemplate {
   constructor(canvas) {
     this.tables = new Map();
-    this.columns = new Map();
     this.templateId = '';
     this.templateName = 'Lab Template';
     this.version = '1.0';
@@ -135,7 +426,7 @@ class LabTemplate {
   }
 
   /**
-   * Internal method to load from a full canvas object that contains lab_objects
+   * Load from canvas with lab_objects
    */
   _loadFromCanvas(canvas) {
     const labObjects = canvas.lab_objects;
@@ -146,17 +437,14 @@ class LabTemplate {
     }
 
     this.version = labObjects.version || this.version;
-
     const textboxes = canvas.getObjects('textbox');
 
     Object.entries(labObjects.tables).forEach(([tableId, tableData]) => {
-      // 1. Create the table
-      this.createTable(tableId, {
+      const table = this.createTable(tableId, {
         name: tableData.name,
-        maxRows: tableData.max_rows || 50
+        maxRows: tableData.max_rows || 22
       });
 
-      // 2. Add each column
       Object.entries(tableData.columns).forEach(([columnType, columnData]) => {
         const textboxId = columnData.textbox_id;
         const textbox = textboxes.find(tb => tb.id === textboxId);
@@ -166,17 +454,16 @@ class LabTemplate {
           return;
         }
 
-        const column = this.addColumnToTable(tableId, columnType, textbox, {
+        const column = table.addColumn(columnType, textbox, {
           maxRows: tableData.max_rows
         });
 
-        // Load the initial data
         column.loadData({
           columnName: `${tableId}_${columnType}`,
           columnType: columnType,
           tableId: tableId,
           maxRows: tableData.max_rows,
-          textlines: columnData.data || []
+          textLines: columnData.data || []
         });
       });
     });
@@ -190,51 +477,110 @@ class LabTemplate {
       throw new Error(`Table ${tableId} already exists`);
     }
 
-    const table = {
-      id: tableId,
-      name: options.name || tableId,
-      columns: {
-        name: null,
-        value: null,
-        reference: null
-      },
-      maxRows: options.maxRows || 50
-    };
-
+    const table = new LabTable(tableId, options);
     this.tables.set(tableId, table);
     return table;
   }
 
   /**
-   * Add a column to a table by referencing an existing fabric textbox
+   * Get table by ID
    */
-  addColumnToTable(tableId, columnType, fabricTextbox, columnOptions = {}) {
-    if (!this.tables.has(tableId)) {
-      throw new Error(`Table ${tableId} does not exist`);
+  getTable(tableId) {
+    return this.tables.get(tableId);
+  }
+
+  /**
+   * Get all tables
+   */
+  getAllTables() {
+    return Array.from(this.tables.values());
+  }
+
+  /**
+   * Find the best table to add rows to (with enough space)
+   */
+  findTableWithSpace(rowCount) {
+    for (const table of this.tables.values()) {
+      if (table.hasSpaceFor(rowCount)) {
+        return table;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Add lab data across multiple tables if needed
+   */
+  addLabData(labId, rowsData) {
+    let remainingRows = [...rowsData];
+    const tablesUsed = [];
+
+    while (remainingRows.length > 0) {
+      const table = this.findTableWithSpace(1); // Find table with at least 1 space
+      
+      if (!table) {
+        throw new Error(`No available space for remaining ${remainingRows.length} rows`);
+      }
+
+      const availableSpace = table.getAvailableSpace();
+      const rowsToInsert = remainingRows.splice(0, availableSpace);
+      
+      try {
+        table.insertLabRows(labId, rowsToInsert);
+        tablesUsed.push(table.id);
+      } catch (error) {
+        console.error(`Error inserting rows into table ${table.id}:`, error);
+        throw error;
+      }
     }
 
-    if (!['name', 'value', 'reference'].includes(columnType)) {
-      throw new Error(`Invalid column type: ${columnType}`);
-    }
+    return tablesUsed;
+  }
 
-    const table = this.tables.get(tableId);
+  /**
+   * Remove lab data from all tables
+   */
+  removeLab(labId) {
+    let removed = false;
     
-    if (table.columns[columnType]) {
-      throw new Error(`Column type ${columnType} already exists in table ${tableId}`);
-    }
-
-    const columnId = `${tableId}_${columnType}`;
-    const column = new LabColumn(fabricTextbox, {
-      ...columnOptions,
-      columnName: columnId,
-      columnType: columnType,
-      tableId: tableId
+    this.tables.forEach(table => {
+      if (table.removeLab(labId)) {
+        removed = true;
+      }
     });
 
-    table.columns[columnType] = columnId;
-    this.columns.set(columnId, column);
+    return removed;
+  }
 
-    return column;
+  /**
+   * Check if a lab exists in any table
+   */
+  hasLab(labId) {
+    for (const table of this.tables.values()) {
+      if (table.hasLab(labId)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Get which tables contain a specific lab
+   */
+  getTablesWithLab(labId) {
+    const tablesWithLab = [];
+    
+    this.tables.forEach((table, tableId) => {
+      if (table.hasLab(labId)) {
+        tablesWithLab.push({
+          tableId: tableId,
+          table: table,
+          occupancy: table.getLabOccupancy(labId)
+        });
+      }
+    });
+
+    return tablesWithLab;
   }
 
   /**
@@ -250,109 +596,7 @@ class LabTemplate {
   }
 
   /**
-   * Get table by ID
-   */
-  getTable(tableId) {
-    return this.tables.get(tableId);
-  }
-
-  /**
-   * Get column by ID
-   */
-  getColumn(columnId) {
-    return this.columns.get(columnId);
-  }
-
-  /**
-   * Get all columns for a table
-   */
-  getTableColumns(tableId) {
-    const table = this.getTable(tableId);
-    if (!table) return {};
-
-    const result = {};
-    Object.entries(table.columns).forEach(([type, columnId]) => {
-      if (columnId) {
-        result[type] = this.getColumn(columnId);
-      }
-    });
-    return result;
-  }
-
-  /**
-   * Get the total row count for a table (max across all columns)
-   */
-  getTableRowCount(tableId) {
-    const columns = this.getTableColumns(tableId);
-    let maxRows = 0;
-
-    Object.values(columns).forEach(column => {
-      if (column) {
-        maxRows = Math.max(maxRows, column.getCurrentRowCount());
-      }
-    });
-
-    return maxRows;
-  }
-
-  /**
-   * Get the first empty row for a table
-   */
-  getTableEmptyRow(tableId) {
-    const columns = this.getTableColumns(tableId);
-    let minEmptyRow = 0;
-
-    Object.values(columns).forEach(column => {
-      if (column) {
-        minEmptyRow = Math.max(minEmptyRow, column.getCurrentRowCount());
-      }
-    });
-
-    return minEmptyRow;
-  }
-
-  /**
-   * Insert a complete row of data into a table
-   */
-  insertTableRow(tableId, rowData, rowIndex = null) {
-    const table = this.getTable(tableId);
-    if (!table) {
-      throw new Error(`Table ${tableId} does not exist`);
-    }
-
-    const targetRow = rowIndex !== null ? rowIndex : this.getTableEmptyRow(tableId);
-    const columns = this.getTableColumns(tableId);
-
-    // Insert data into each column
-    Object.entries(rowData).forEach(([columnType, value]) => {
-      const column = columns[columnType];
-      if (column && value !== undefined) {
-        column.insertData(targetRow, value);
-      }
-    });
-
-    return targetRow;
-  }
-
-  /**
-   * Get a complete row of data from a table
-   */
-  getTableRow(tableId, rowIndex) {
-    const columns = this.getTableColumns(tableId);
-    const rowData = {};
-
-    Object.entries(columns).forEach(([type, column]) => {
-      if (column) {
-        rowData[type] = column.getData(rowIndex);
-      }
-    });
-
-    return rowData;
-  }
-
-  /**
-   * Find which textboxes in a canvas could be lab columns
-   * Useful for converting existing templates to lab templates
+   * Find potential columns in canvas
    */
   static findPotentialColumns(canvas) {
     const textboxes = canvas.getObjects('textbox');
@@ -365,23 +609,13 @@ class LabTemplate {
   }
 
   /**
-   * Export the lab template data (separate from fabric.js template)
+   * Export lab template data
    */
   exportLabData() {
     const tablesData = {};
     
     this.tables.forEach((table, tableId) => {
-      const columns = {};
-      Object.entries(table.columns).forEach(([type, columnId]) => {
-        if (columnId && this.columns.has(columnId)) {
-          columns[type] = this.columns.get(columnId).exportData();
-        }
-      });
-
-      tablesData[tableId] = {
-        ...table,
-        columnsData: columns
-      };
+      tablesData[tableId] = table.exportData();
     });
 
     return {
@@ -394,35 +628,21 @@ class LabTemplate {
 
   /**
    * Load lab template from exported data
-   * You'll need to match textboxes by ID or position
    */
   loadLabData(exportedData, canvas) {
     this.templateId = exportedData.templateId;
     this.templateName = exportedData.templateName;
     this.version = exportedData.version;
 
-    // Get all textboxes from canvas for matching
     const textboxes = canvas.getObjects('textbox');
 
-    // Recreate tables and columns
     Object.entries(exportedData.tables).forEach(([tableId, tableData]) => {
-      this.createTable(tableId, {
+      const table = this.createTable(tableId, {
         name: tableData.name,
         maxRows: tableData.maxRows
       });
 
-      Object.entries(tableData.columnsData || {}).forEach(([columnType, columnData]) => {
-        // Find the matching textbox (you might need to adjust this matching logic)
-        const matchingTextbox = textboxes.find(tb => tb.id === columnData.textboxId);
-        
-        if (matchingTextbox) {
-          const column = this.addColumnToTable(tableId, columnType, matchingTextbox, {
-            maxRows: columnData.maxRows
-          });
-
-          column.loadData(columnData);
-        }
-      });
+      table.loadData(tableData, textboxes);
     });
   }
 }
