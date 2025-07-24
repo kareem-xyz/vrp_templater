@@ -82,7 +82,7 @@ function renderLabControls(lab) {
 
   const names = lab.rows.names || [];
   const refVals = lab.rows.ref_vals || [];
-  const normalVals = lab.rows.val_normal || [];
+  const normalVals = lab.rows.val || [];
   const rowCount = Math.max(names.length, refVals.length);
   const hasNormalValues = normalVals.length > 0;
 
@@ -201,6 +201,8 @@ function escapeHtml(text) {
 /**
  * Update lab data when input field changes
  */
+
+// Debug version of updateLabData to identify the mapping issue
 function updateLabData(labId, rowIndex, fieldType, newValue) {
   if (!activeLabs.has(labId)) {
     console.warn(`Lab ${labId} is not active`);
@@ -216,26 +218,39 @@ function updateLabData(labId, rowIndex, fieldType, newValue) {
       return;
     }
 
-    // Update data in the appropriate table
-    // Note: We need to account for the title row (index 0) and the actual data rows (index 1+)
-    const actualRowIndex = rowIndex + 1; // +1 because row 0 is the title
-    
+    console.log(`Updating ${labId} UI row ${rowIndex} field ${fieldType} to "${newValue}"`);
+
+    let previousTableIndex = 0;
+    let wrapped = 1; // takes care of title and continous tables.
     tablesWithLab.forEach(({ table, occupancy }) => {
-      const targetRowIndex = occupancy.startRow + actualRowIndex;
+      console.log(`Table ${table.id} occupancy:`, occupancy);
       
-      if (targetRowIndex <= occupancy.endRow - 1) { // -1 because last row is empty spacer
+      // The lab data structure is: [title_row, data_row_0, data_row_1, ..., empty_spacer]
+      // UI rowIndex 0 = data_row_0 (which is occupancy.startRow + 1)
+      // UI rowIndex 1 = data_row_1 (which is occupancy.startRow + 2)
+
+      targetRowIndex = occupancy.startRow + wrapped + rowIndex - previousTableIndex;
+      
+      console.log(`UI row ${rowIndex} maps to table row ${targetRowIndex}`);
+      console.log(`Occupancy range: ${occupancy.startRow} to ${occupancy.endRow}`);
+      
+      // Make sure we're within the data rows (not title or spacer)
+      if (targetRowIndex >= occupancy.startRow && targetRowIndex <= occupancy.endRow) {
         const column = table.getColumn(fieldType);
         if (column) {
-          // For the title row, make it bold if it's the name field
-          let valueToInsert = newValue;
-          if (rowIndex === -1 && fieldType === 'name' && actualRowIndex === 1) {
-            // This is updating the title row
-            valueToInsert = `> -- ${newValue} --`;
-          }
-          
-          column.insertData(targetRowIndex, valueToInsert);
-          console.log(`Updated ${labId} row ${rowIndex} ${fieldType} to: ${valueToInsert}`);
+          column.insertData(targetRowIndex, newValue);
+          console.log(`✓ Successfully updated ${labId} table ${table.id} row ${targetRowIndex} ${fieldType}`);
+        } else {
+          console.error(`✗ Column ${fieldType} not found in table ${table.id}`);
         }
+        return true;
+      } 
+      else if (targetRowIndex > 21) {
+        previousTableIndex = occupancy.endRow - occupancy.startRow;
+        wrapped = 0;
+      }
+      else {
+        console.warn(`✗ Target row ${targetRowIndex} outside data range (${occupancy.startRow + 1} to ${occupancy.endRow - 1})`);
       }
     });
 
@@ -366,11 +381,13 @@ function addLabData(labId) {
 
   // Prepare row data
   const rowsData = [];
-  rowsData.push({
-    name: `>> ${lab.title}`,
-    reference:'',
-    value: ''
-  });
+  if (lab.title) {
+    rowsData.push({
+      name: `>> ${lab.title}`,
+      reference:'',
+      value: ''
+    });
+  }
 
   for (let i = 0; i < rowCount; i++) {
     rowsData.push({

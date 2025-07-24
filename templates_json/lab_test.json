@@ -738,6 +738,12 @@
             "data": [
             ]
           },
+          "value": {
+            "textbox_id": "t2_val",
+            "type": "value",
+            "data": [
+            ]
+          },
           "reference": {
             "textbox_id": "t2_ref_val",
             "type": "reference",
