@@ -1,6 +1,10 @@
 /**
  * Column class - references an existing fabric.Textbox with lab-specific functionality
  */
+
+/**
+ * Column class - references an existing fabric.Textbox with lab-specific functionality
+ */
 class LabColumn {
   constructor(fabricTextbox, options = {}) {
     // Reference to the existing fabric.js textbox
@@ -26,9 +30,9 @@ class LabColumn {
   }
 
   /**
-   * Insert data at specified row
+   * Insert data at specified row with optional formatting
    */
-  insertData(rowIndex, value) {
+  insertData(rowIndex, value, options = {}) {
     if (rowIndex < 0 || rowIndex >= this.maxRows) {
       throw new Error(`Row index ${rowIndex} out of bounds (0-${this.maxRows - 1})`);
     }
@@ -38,7 +42,18 @@ class LabColumn {
       this.textbox.textLines.push('');
     }
 
-    this.textbox.textLines[rowIndex] = value.toString();
+    let formattedValue = value.toString();
+    
+    // Apply bold formatting for title rows if requested
+    if (options.bold && this.columnType === 'name' && formattedValue.startsWith('>')) {
+      // For fabric.js, we can't directly make text bold in a textbox
+      // but we can use Unicode bold characters or special formatting
+      // For now, we'll keep the ">" symbol to indicate it's a title
+      this.textbox.textLines[rowIndex] = formattedValue;
+    } else {
+      this.textbox.textLines[rowIndex] = formattedValue;
+    }
+
     this.updateTextboxDisplay();
     return true;
   }
@@ -46,13 +61,19 @@ class LabColumn {
   /**
    * Append data to the next available row
    */
-  appendData(value) {
-    const nextRowIndex = this.textbox.textLines.length;
+  appendData(value, options = {}) {
+    let nextRowIndex = this.textbox.textLines.length;
     if (nextRowIndex >= this.maxRows) {
       throw new Error(`Maximum rows (${this.maxRows}) reached`);
     }
-    
-    this.textbox.textLines.push(value.toString());
+    // Adjust for Empty first row
+    if (nextRowIndex == 1) {
+      this.insertData(0, value, options);
+    }
+    else {
+      this.textbox.textLines.push(value.toString());
+    }
+
     this.updateTextboxDisplay();
     return nextRowIndex;
   }
@@ -82,9 +103,8 @@ class LabColumn {
    */
   clearDataRange(startRow, endRow) {
     // Has to remove title row, and empty end row.
-    this.textbox.textLines.splice(startRow, endRow - startRow);
+    this.textbox.textLines.splice(startRow, endRow - startRow + 1);
     this.updateTextboxDisplay();
-
   }
 
   /**
@@ -207,7 +227,15 @@ class LabTable {
    * Get the first empty row
    */
   getFirstEmptyRow() {
-    return this.getCurrentRowCount();
+    let rowCount = this.getCurrentRowCount();
+    if (rowCount == 0) return rowCount;
+
+    if (rowCount == 1) {
+      let rowData = this.getRow(0);
+      if (Object.values(rowData)[0] == '') return 0;
+    }
+
+    return rowCount;
   }
 
   /**

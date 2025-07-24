@@ -7,21 +7,10 @@ function loadLab() {
 
 let availableLabs = {}; // Populated from JSON
 let activeLabs = new Set(); // Track which labs are currently active
+let labInputElements = new Map(); // Track input elements for each lab
 
 /**
  * Load lab definitions from JSON file and populate toggle UI
- * Expected format:
- * {
- *   "Lab Title": {
- *     id: "Lab1",
- *     title: "Lab1",
- *     rows: {
- *       names: [...],
- *       ref_vals: [...]
- *     }
- *   },
- *   ...
- * }
  */
 async function loadAvailableLabs(jsonPath) {
   try {
@@ -37,7 +26,7 @@ async function loadAvailableLabs(jsonPath) {
 }
 
 /**
- * Render toggle list of labs into #lab-list-container
+ * Render toggle list of labs into #lab-list-container with interactive controls
  */
 function renderLabListUI() {
   const container = document.getElementById('lab-list-container');
@@ -51,23 +40,290 @@ function renderLabListUI() {
   for (const labTitle in availableLabs) {
     const lab = availableLabs[labTitle];
     const isActive = activeLabs.has(lab.id);
+    const isExpanded = isActive; // Only show expanded if active
     
-    const row = document.createElement('div');
-    row.innerHTML = `
-      <label>
-        <input type="checkbox" ${isActive ? 'checked' : ''} 
-               onchange="AddLab('${lab.id}', this.checked)">
-        ${lab.title}
-      </label>
+    const labDiv = document.createElement('div');
+    labDiv.className = 'lab-item mb-3';
+    labDiv.innerHTML = `
+      <div class="lab-header">
+        <div class="d-flex align-items-center justify-content-between">
+          <label class="d-flex align-items-center">
+            <input type="checkbox" class="me-2" ${isActive ? 'checked' : ''} 
+                   onchange="AddLab('${lab.id}', this.checked)">
+            <strong>${lab.title}</strong>
+          </label>
+          ${isActive ? `
+            <button class="btn btn-sm btn-outline-secondary" 
+                    onclick="toggleLabControls('${lab.id}')"
+                    id="toggle-btn-${lab.id}"
+                    title="Toggle lab controls">
+              <i class="fas fa-chevron-${isExpanded ? 'up' : 'down'}"></i>
+              ${isExpanded ? 'Hide' : 'Show'}
+            </button>
+          ` : ''}
+        </div>
+      </div>
+      <div id="lab-controls-${lab.id}" class="lab-controls mt-2" 
+           style="display: ${isActive && isExpanded ? 'block' : 'none'};">
+        ${isActive ? renderLabControls(lab) : ''}
+      </div>
     `;
-    container.appendChild(row);
+    container.appendChild(labDiv);
   }
 }
 
 /**
+ * Render interactive controls for a specific lab
+ */
+function renderLabControls(lab) {
+  if (!lab.rows || (!lab.rows.names && !lab.rows.ref_vals)) {
+    return '<p class="text-muted small">No data available</p>';
+  }
+
+  const names = lab.rows.names || [];
+  const refVals = lab.rows.ref_vals || [];
+  const normalVals = lab.rows.val_normal || [];
+  const rowCount = Math.max(names.length, refVals.length);
+  const hasNormalValues = normalVals.length > 0;
+
+  let controlsHTML = `
+    <div class="lab-controls-container border rounded p-2 bg-light">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <small class="text-muted">${lab.title} Data (${rowCount} tests)</small>
+        ${hasNormalValues ? `
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="normal-switch-${lab.id}" 
+                   onchange="applyNormalValues('${lab.id}', this.checked)">
+            <label class="form-check-label small" for="normal-switch-${lab.id}">
+              Normal Values
+            </label>
+          </div>
+        ` : ''}
+      </div>
+  `;
+
+  // Add controls for each row
+  for (let i = 0; i < rowCount; i++) {
+    const name = names[i] || '';
+    const refVal = refVals[i] || '';
+    const normalVal = normalVals[i] || '';
+    
+    controlsHTML += `
+      <div class="row mb-2 align-items-center" data-row-index="${i}">
+        <div class="col-4">
+          <input type="text" class="form-control form-control-sm" 
+                 placeholder="Test name" 
+                 value="${escapeHtml(name)}"
+                 onchange="updateLabData('${lab.id}', ${i}, 'name', this.value)">
+        </div>
+        <div class="col-4">
+          <input type="text" class="form-control form-control-sm" 
+                 placeholder="Reference" 
+                 value="${escapeHtml(refVal)}"
+                 onchange="updateLabData('${lab.id}', ${i}, 'reference', this.value)">
+        </div>
+        <div class="col-4">
+          <input type="text" class="form-control form-control-sm lab-value-input" 
+                 placeholder="Value" 
+                 value=""
+                 data-normal-value="${escapeHtml(normalVal)}"
+                 onchange="updateLabData('${lab.id}', ${i}, 'value', this.value)">
+        </div>
+      </div>
+    `;
+  }
+
+  controlsHTML += `
+      <div class="mt-2">
+        <button class="btn btn-sm btn-outline-secondary" onclick="refreshLabDisplay('${lab.id}')">
+          Refresh Display
+        </button>
+      </div>
+    </div>
+  `;
+
+  return controlsHTML;
+}
+
+/**
+ * Toggle lab controls visibility
+ */
+function toggleLabControls(labId) {
+  const controlsDiv = document.getElementById(`lab-controls-${labId}`);
+  const toggleBtn = document.getElementById(`toggle-btn-${labId}`);
+  
+  if (!controlsDiv || !toggleBtn) return;
+  
+  const isVisible = controlsDiv.style.display === 'block';
+  controlsDiv.style.display = isVisible ? 'none' : 'block';
+  
+  // Update button text and icon
+  const icon = toggleBtn.querySelector('i');
+  if (icon) {
+    icon.className = `fas fa-chevron-${isVisible ? 'down' : 'up'}`;
+  }
+  toggleBtn.innerHTML = `
+    <i class="fas fa-chevron-${isVisible ? 'down' : 'up'}"></i>
+    ${isVisible ? 'Show' : 'Hide'}
+  `;
+}
+
+/**
+ * Apply normal values to all value fields for a lab
+ */
+function applyNormalValues(labId, useNormal) {
+  const controlsDiv = document.getElementById(`lab-controls-${labId}`);
+  if (!controlsDiv) return;
+  
+  const valueInputs = controlsDiv.querySelectorAll('.lab-value-input');
+  
+  valueInputs.forEach((input, index) => {
+    if (useNormal) {
+      const normalValue = input.getAttribute('data-normal-value') || '';
+      input.value = normalValue;
+      // Trigger the onchange event to update the lab data
+      updateLabData(labId, index, 'value', normalValue);
+    } else {
+      input.value = '';
+      // Trigger the onchange event to clear the lab data
+      updateLabData(labId, index, 'value', '');
+    }
+  });
+  
+  showLabMessage(`${useNormal ? 'Applied' : 'Cleared'} normal values for lab ${labId}`, 'info');
+}
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+/**
+ * Update lab data when input field changes
+ */
+function updateLabData(labId, rowIndex, fieldType, newValue) {
+  if (!activeLabs.has(labId)) {
+    console.warn(`Lab ${labId} is not active`);
+    return;
+  }
+
+  try {
+    // Find tables containing this lab
+    const tablesWithLab = labTemplate.getTablesWithLab(labId);
+    
+    if (tablesWithLab.length === 0) {
+      console.warn(`Lab ${labId} not found in any tables`);
+      return;
+    }
+
+    // Update data in the appropriate table
+    // Note: We need to account for the title row (index 0) and the actual data rows (index 1+)
+    const actualRowIndex = rowIndex + 1; // +1 because row 0 is the title
+    
+    tablesWithLab.forEach(({ table, occupancy }) => {
+      const targetRowIndex = occupancy.startRow + actualRowIndex;
+      
+      if (targetRowIndex <= occupancy.endRow - 1) { // -1 because last row is empty spacer
+        const column = table.getColumn(fieldType);
+        if (column) {
+          // For the title row, make it bold if it's the name field
+          let valueToInsert = newValue;
+          if (rowIndex === -1 && fieldType === 'name' && actualRowIndex === 1) {
+            // This is updating the title row
+            valueToInsert = `> -- ${newValue} --`;
+          }
+          
+          column.insertData(targetRowIndex, valueToInsert);
+          console.log(`Updated ${labId} row ${rowIndex} ${fieldType} to: ${valueToInsert}`);
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error(`Error updating lab data:`, error);
+    showLabMessage(`Failed to update ${labId}: ${error.message}`, 'error');
+  }
+}
+
+/**
+ * Refresh the display for a specific lab
+ */
+function refreshLabDisplay(labId) {
+  const tablesWithLab = labTemplate.getTablesWithLab(labId);
+  tablesWithLab.forEach(({ table }) => {
+    const columns = table.getAllColumns();
+    Object.values(columns).forEach(column => {
+      if (column) {
+        column.updateTextboxDisplay();
+      }
+    });
+  });
+  showLabMessage(`Refreshed display for lab ${labId}`, 'info');
+}
+
+/**
+ * Consolidate labs - move labs from higher numbered tables to fill gaps in lower numbered tables
+ */
+function consolidateLabs() {
+  const tables = labTemplate.getAllTables().sort((a, b) => a.id.localeCompare(b.id));
+  let movesMade = false;
+
+  // Check each table pair to see if we can move labs to fill gaps
+  for (let i = 0; i < tables.length - 1; i++) {
+    const sourceTable = tables[i + 1]; // Higher numbered table
+    const targetTable = tables[i]; // Lower numbered table
+    
+    if (targetTable.isFull() || sourceTable.getCurrentRowCount() === 0) {
+      continue; // Skip if target is full or source is empty
+    }
+
+    // Get labs from source table, sorted by their position
+    const sourceLabIds = Array.from(sourceTable.labOccupancy.keys());
+    
+    for (const labId of sourceLabIds) {
+      const occupancy = sourceTable.getLabOccupancy(labId);
+      const labRowCount = occupancy.endRow - occupancy.startRow + 1;
+      
+      // Check if target table has enough space for this lab
+      if (targetTable.hasSpaceFor(labRowCount)) {
+        try {
+          // Extract lab data from source table
+          const labData = [];
+          for (let rowIdx = occupancy.startRow; rowIdx <= occupancy.endRow; rowIdx++) {
+            labData.push(sourceTable.getRow(rowIdx));
+          }
+          
+          // Remove from source table
+          sourceTable.removeLab(labId);
+          
+          // Add to target table
+          targetTable.insertLabRows(labId, labData);
+          
+          console.log(`Moved lab ${labId} from table ${sourceTable.id} to ${targetTable.id}`);
+          movesMade = true;
+          
+          // If target table becomes full, move to next target
+          if (targetTable.isFull()) {
+            break;
+          }
+        } catch (error) {
+          console.error(`Error moving lab ${labId}:`, error);
+          showLabMessage(`Failed to consolidate lab ${labId}: ${error.message}`, 'error');
+        }
+      }
+    }
+  }
+
+  if (movesMade) {
+    showLabMessage('Labs consolidated successfully', 'success');
+    return true;
+  }
+  
+  return false;
+}
+
+/**
  * Modified AddLab function to work with new classes and handle unchecking
- * @param {string} labId - Lab ID (not title)
- * @param {boolean} enabled - True if toggled on, false if toggled off
  */
 function AddLab(labId, enabled) {
   if (enabled) {
@@ -75,11 +331,13 @@ function AddLab(labId, enabled) {
   } else {
     removeLabData(labId);
   }
+  
+  // Re-render the entire UI to update toggle buttons and controls
+  renderLabListUI();
 }
 
 /**
  * Add lab rows to LabTemplate when toggled on
- * @param {string} labId - Lab ID (not title)
  */
 function addLabData(labId) {
   if (activeLabs.has(labId)) {
@@ -106,15 +364,13 @@ function addLabData(labId) {
     return;
   }
 
-
-  // Push title
   // Prepare row data
   const rowsData = [];
   rowsData.push({
-    name: `-- ${lab.title} --`,
+    name: `>> ${lab.title}`,
     reference:'',
     value: ''
-  })
+  });
 
   for (let i = 0; i < rowCount; i++) {
     rowsData.push({
@@ -124,14 +380,17 @@ function addLabData(labId) {
     });
   }
 
-  // push emtpy end
-    rowsData.push({
-    name: '',
-    reference:'',
-    value: ''
-  })
+  // Push empty end
+  rowsData.push({
+    name: ' ',
+    reference:' ',
+    value: ' '
+  });
 
   try {
+    // First try to consolidate existing labs to make space
+    consolidateLabs();
+    
     // Check if we have any tables with space
     const availableTable = labTemplate.findTableWithSpace(1);
     if (!availableTable) {
@@ -161,7 +420,6 @@ function addLabData(labId) {
 
 /**
  * Remove lab data when toggled off
- * @param {string} labId - Lab ID to remove
  */
 function removeLabData(labId) {
   if (!activeLabs.has(labId)) {
@@ -195,6 +453,11 @@ function removeLabData(labId) {
       
       console.log(`Successfully removed lab ${labId} from ${tablesWithLab.length} table(s)`);
       
+      // Try to consolidate remaining labs after removal
+      setTimeout(() => {
+        consolidateLabs();
+      }, 100); // Small delay to ensure removal is complete
+      
       // Show success message
       const tableText = tablesWithLab.length === 1 ? 'table' : 'tables';
       showLabMessage(`Removed ${lab.title} from ${tablesWithLab.length} ${tableText}`, 'success');
@@ -217,8 +480,6 @@ function removeLabData(labId) {
 
 /**
  * Update checkbox state programmatically
- * @param {string} labId - Lab ID
- * @param {boolean} checked - Whether checkbox should be checked
  */
 function updateCheckboxState(labId, checked) {
   const container = document.getElementById('lab-list-container');
@@ -232,8 +493,6 @@ function updateCheckboxState(labId, checked) {
 
 /**
  * Show a temporary message to the user
- * @param {string} message - Message to show
- * @param {string} type - Message type: 'success', 'error', 'warning', 'info'
  */
 function showLabMessage(message, type = 'info') {
   // Create or get message container
@@ -288,6 +547,17 @@ function showLabMessage(message, type = 'info') {
       }, 300);
     }
   }, 5000);
+}
+
+/**
+ * Manual consolidation trigger (for testing/admin use)
+ */
+function manualConsolidate() {
+  const result = consolidateLabs();
+  if (!result) {
+    showLabMessage('No consolidation needed', 'info');
+  }
+  showLabSummary();
 }
 
 /**
@@ -382,37 +652,22 @@ function clearAllLabs() {
 }
 
 /**
- * Check if a specific lab is currently active
- * @param {string} labId - Lab ID to check
- * @return {boolean} - True if lab is active
+ * Utility functions for external use
  */
 function isLabActive(labId) {
   return activeLabs.has(labId);
 }
 
-/**
- * Get list of active lab IDs
- * @return {string[]} - Array of active lab IDs
- */
 function getActiveLabs() {
   return Array.from(activeLabs);
 }
 
-/**
- * Get total space available across all tables
- * @return {number} - Total available rows
- */
 function getTotalAvailableSpace() {
   return labTemplate.getAllTables().reduce((total, table) => {
     return total + table.getAvailableSpace();
   }, 0);
 }
 
-/**
- * Check if there's enough space to add a lab
- * @param {string} labId - Lab ID to check
- * @return {boolean} - True if there's enough space
- */
 function canAddLab(labId) {
   const lab = Object.values(availableLabs).find(l => l.id === labId);
   if (!lab || !lab.rows) return false;
@@ -421,7 +676,7 @@ function canAddLab(labId) {
   return getTotalAvailableSpace() >= rowCount;
 }
 
-// Add CSS for animations (only if not already added)
+// Add CSS for animations and lab controls styling
 if (!document.getElementById('lab-message-styles')) {
   const style = document.createElement('style');
   style.id = 'lab-message-styles';
@@ -446,6 +701,37 @@ if (!document.getElementById('lab-message-styles')) {
         transform: translateX(100%); 
         opacity: 0; 
       }
+    }
+
+    .lab-item {
+      border: 1px solid #dee2e6;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      background-color: #f8f9fa;
+    }
+
+    .lab-header {
+      border-bottom: 1px solid #dee2e6;
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .lab-controls-container {
+      background-color: white !important;
+    }
+
+    .lab-controls .form-control-sm {
+      font-size: 0.8rem;
+    }
+
+    .lab-controls .row {
+      margin-left: -0.25rem;
+      margin-right: -0.25rem;
+    }
+
+    .lab-controls .row > div {
+      padding-left: 0.25rem;
+      padding-right: 0.25rem;
     }
   `;
   document.head.appendChild(style);
