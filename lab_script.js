@@ -40,7 +40,7 @@ function renderLabListUI() {
   for (const labTitle in availableLabs) {
     const lab = availableLabs[labTitle];
     const isActive = activeLabs.has(lab.id);
-    const isExpanded = isActive; // Only show expanded if active
+    const isExpanded = false; // Only show expanded if active
     
     const labDiv = document.createElement('div');
     labDiv.className = 'lab-item mb-3';
@@ -222,6 +222,7 @@ function updateLabData(labId, rowIndex, fieldType, newValue) {
 
     let previousTableIndex = 0;
     let wrapped = 1; // takes care of title and continous tables.
+    let inserted = false;
     tablesWithLab.forEach(({ table, occupancy }) => {
       console.log(`Table ${table.id} occupancy:`, occupancy);
       
@@ -235,7 +236,7 @@ function updateLabData(labId, rowIndex, fieldType, newValue) {
       console.log(`Occupancy range: ${occupancy.startRow} to ${occupancy.endRow}`);
       
       // Make sure we're within the data rows (not title or spacer)
-      if (targetRowIndex >= occupancy.startRow && targetRowIndex <= occupancy.endRow) {
+      if (!inserted && targetRowIndex >= occupancy.startRow && targetRowIndex <= occupancy.endRow) {
         const column = table.getColumn(fieldType);
         if (column) {
           column.insertData(targetRowIndex, newValue);
@@ -243,7 +244,7 @@ function updateLabData(labId, rowIndex, fieldType, newValue) {
         } else {
           console.error(`✗ Column ${fieldType} not found in table ${table.id}`);
         }
-        return true;
+        inserted = true;
       } 
       else if (targetRowIndex > 21) {
         previousTableIndex = occupancy.endRow - occupancy.startRow;
