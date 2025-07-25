@@ -232,8 +232,7 @@ function updateLabData(labId, rowIndex, fieldType, newValue) {
 
       targetRowIndex = occupancy.startRow + wrapped + rowIndex - previousTableIndex;
       
-      console.log(`UI row ${rowIndex} maps to table row ${targetRowIndex}`);
-      console.log(`Occupancy range: ${occupancy.startRow} to ${occupancy.endRow}`);
+      console.log(`Lab Data row ${rowIndex} maps to table row ${targetRowIndex}`);
       
       // Make sure we're within the data rows (not title or spacer)
       if (!inserted && targetRowIndex >= occupancy.startRow && targetRowIndex <= occupancy.endRow) {
