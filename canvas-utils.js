@@ -25,7 +25,8 @@ function fitImageToCanvas(img) {
     canvasWidth / img.width, 
     canvasHeight / img.height
   );
-    scale = scale.toFixed(7);
+
+  scale = scale.toFixed(7);
   // Store the current scale for object positioning
   currentImageScale = scale;
   
@@ -55,7 +56,6 @@ function fitImageToCanvas(img) {
   }, false)
 
   canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
-  // canvas.setZoom(scale);
   canvas.renderAll();
   console.log(canvas.getWidth(), canvas.getHeight(), img.width * scale, img.height* scale)
   return scale;
@@ -107,40 +107,3 @@ function handleResize() {
     }
   }, 100);
 }
-
-/*
-                Old Handle resize function
-// Responsive canvas handling with debouncing
-function setupResponsiveCanvas(canvas, originalBgImg = null, currentImageScale = 1) {
-  function handleResize() {
-    setTimeout(() => {
-      const container = document.querySelector('.canvas-box');
-      const newWidth = container.clientWidth - 10;
-      const newHeight = container.clientHeight - 10;
-        
-        canvas.setWidth(newWidth);
-        canvas.setHeight(newHeight);
-        
-        // If there's a background image, refit it
-        const bgImg = originalBgImg || canvas.backgroundImage;
-        if (bgImg) {
-          const newScale = fitImageToCanvas(canvas, bgImg);
-          canvas.setBackgroundImage(bgImg, canvas.renderAll.bind(canvas));
-          
-          // Scale existing objects proportionally
-          const scaleRatio = newScale / currentImageScale;
-          rescaleTextObjects(canvas, scaleRatio);
-          currentImageScale = newScale;
-          
-          canvas.renderAll();
-    }
-    }, 100);
-  }
-
-  // Handle window resize with debouncing
-  let resizeTimeout;
-  window.addEventListener('resize', function() {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(handleResize, 250);
-  });
-  */
