@@ -79,7 +79,7 @@ function makeTextUI(obj, index=0) {
   formattingRow.appendChild(styleButtons);
 
   // Delete button
-  const deleteBtn = document.createElement('button');
+  const deleteBtn = document.createElement('a');
   deleteBtn.innerText = 'X';
   deleteBtn.className = 'btn btn-sm btn-danger';
   deleteBtn.onclick = () => {
@@ -127,7 +127,7 @@ function createStyleButtons(obj) {
   container.className = 'd-flex align-items-center gap-1';
 
   // Show/Hide formatting toggle button
-  const toggleBtn = document.createElement('button');
+  const toggleBtn = document.createElement('a');
   toggleBtn.innerHTML = '+';
   toggleBtn.className = 'btn btn-outline-primary btn-sm';
   toggleBtn.title = 'Show/Hide Formatting';
@@ -157,7 +157,7 @@ function createStyleButtons(obj) {
   group.className = 'btn-group btn-group-sm me-2';
 
   // Bold
-  const boldBtn = document.createElement('button');
+  const boldBtn = document.createElement('a');
   boldBtn.innerHTML = '<strong>B</strong>';
   boldBtn.className = `btn btn-outline-secondary ${obj.fontWeight === 'bold' ? 'active' : ''}`;
   boldBtn.title = 'Toggle Bold';
@@ -169,7 +169,7 @@ function createStyleButtons(obj) {
   group.appendChild(boldBtn);
 
   // Italic
-  const italicBtn = document.createElement('button');
+  const italicBtn = document.createElement('a');
   italicBtn.innerHTML = '<em>I</em>';
   italicBtn.className = `btn btn-outline-secondary ${obj.fontStyle === 'italic' ? 'active' : ''}`;
   italicBtn.title = 'Toggle Italic';
@@ -181,7 +181,7 @@ function createStyleButtons(obj) {
   group.appendChild(italicBtn);
 
   // Underline
-  const underlineBtn = document.createElement('button');
+  const underlineBtn = document.createElement('a');
   underlineBtn.innerHTML = '<u>U</u>';
   underlineBtn.className = `btn btn-outline-secondary ${obj.underline ? 'active' : ''}`;
   underlineBtn.title = 'Toggle Underline';
@@ -193,7 +193,7 @@ function createStyleButtons(obj) {
   group.appendChild(underlineBtn);
 
   // Center-align
-  const alignBtn = document.createElement('button');
+  const alignBtn = document.createElement('a');
   alignBtn.innerText = 'C';
   alignBtn.className = `btn btn-outline-secondary ${obj.textAlign === 'center' ? 'active' : ''}`;
   alignBtn.title = 'Toggle Center Align';
@@ -212,9 +212,8 @@ function createStyleButtons(obj) {
   const fontDropdown = document.createElement('div');
   fontDropdown.className = 'dropdown me-2';
 
-  const fontBtn = document.createElement('button');
+  const fontBtn = document.createElement('a');
   fontBtn.className = 'btn btn-outline-secondary btn-sm dropdown-toggle';
-  fontBtn.type = 'button';
   fontBtn.setAttribute('data-bs-toggle', 'dropdown');
   fontBtn.setAttribute('aria-expanded', 'false');
   fontBtn.innerHTML = obj.fontFamily || 'Arial';
