@@ -107,3 +107,32 @@ function handleResize() {
     }
   }, 100);
 }
+
+async function fetchJSON(url) {
+  try {
+    const response = await fetch(url); // Make a GET request to the specified URL
+    if (!response.ok) {
+      // Check if the request was successful (status code 200-299)
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const jsonData = await response.json(); // Parse the response body as JSON
+    return jsonData; // Return the parsed JSON object
+  } catch (error) {
+    console.error("Error fetching JSON:", error);
+    return null; // Or handle the error as appropriate for your application
+  }
+  // Example usage:
+  /*
+  const serverUrl = "https://example.com/api/data.json"; // Replace with your actual server URL
+  fetchJSON(serverURL)
+    .then((data) => {
+      if (data) {
+        console.log("JSON data received:", data);
+        // You can now work with the 'data' object
+        // For example: console.log(data.propertyName);
+      } else {
+        console.log("Failed to fetch JSON data.");
+      }
+    });
+  */
+}

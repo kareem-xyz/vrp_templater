@@ -1,145 +1,368 @@
 {
-  "Comprehensive Metabolic Panel": {
-    "id": "ComprehensiveMetabolicPanel",
-    "title": "Comprehensive Metabolic Panel",
+  "Arterial Blood Gases (ABG)": {
+    "id": "ABG",
+    "title": "Arterial Blood Gases (ABG)",
     "rows": {
       "names": [
-        "Sodium mmol/L",
-        "Potassium mmol/L",
-        "Chloride mmol/L",
-        "CO2 mmol/L",
-        "Glucose mg/dL",
-        "BUN mg/dL",
-        "Creat mg/dL",
-        "Albumin g/dL",
-        "Alk Phos (U/dL)",
-        "Anion Gap",
-        "Bicarbonate (mmol/L)",
-        "AST (u/L)",
-        "Calcium (mg/dL)",
-        "Total Protein 7 (g/dL)",
-        "ALT (U/L)"
+        "BE/BD",
+        "HCO\u2083\u207b",
+        "Lactate",
+        "PaCO\u2082",
+        "PaO\u2082",
+        "SaO\u2082",
+        "ph"
       ],
       "ref_vals": [
-        "135-145",
-        "3.5-5.5",
-        "98-107",
-        "22-30",
-        "65-179",
-        "7-21",
-        "0.70-1.3",
-        "3.5-5.0",
-        "38-126.0",
-        "9-26",
-        "22-28",
-        "19-55",
-        "8.5-10.2",
-        "6.5-8.3",
-        "19-72"
+        "-2  -  +2",
+        "22  -  26",
+        "0.5 - 2.2",
+        "35  -  45",
+        "80  - 100",
+        "95  - 100",
+        "7.35- 7.45"
       ],
-      "val":[
-        140,
-        4,
-        103,
-        25,
-        80,
-        14,
-        1.0,
-        4.0,
-        80,
-        18,
-        25,
-        34,
-        9.1,
-        7.1,
-        33
-      ]
-    }
-  },
-  "CBC": {
-    "id": "CBC",
-    "title": "CBC",
-    "rows": {
-      "names": [
-        "Red Blood Cells (million/mcl)",
-        "Hemoglobin (g/dl)",
-        "Hematocrit (%)",
-        "White Blood Cells (x10(9)/L)",
-        "Platelet (x10(3)/L)"
-      ],
-      "ref_vals": [
-        "5-9",
-        "13-17",
-        "38-50",
-        "4-11",
-        "150-450"
-      ],
-      "val":[
-        7,
-        15,
-        43,
-        7,
-        300
-      ]
-    }
-  },
-  "C-Reactive Protein (CRP) mg/L": {
-    "id": "CRP",
-    "title": "C-Reactive Protein (CRP) mg/L",
-    "rows": {
-      "names": [
-        "C-Reactive Protein (CRP) mg/L"
-      ],
-      "ref_vals": [
-        "0.3-1.0"
-      ],
-      "val":[
-        5.0
-      ]
-    }
-  },
-  "Erythrocyte Sedimentation Rate mm/hr": {
-    "id": "ESR",
-    "title": "Erythrocyte Sedimentation Rate mm/hr",
-    "rows": {
-      "names": [
-        "Erythrocyte Sedimentation Rate mm/hr"
-      ],
-      "ref_vals": [
-        "0-30"
-      ],
-      "val":[
-        15
-      ]
-    }
-  },
-  "Venous Blood Gas (VBG)": {
-    "id": "VBG",
-    "title": "Venous Blood Gas (VBG)",
-    "rows": {
-      "names": [
-        "pH",
-        "PCO2 (mmHg)",
-        "PO2 (mmHg)",
-        "HCO3 (mEq/L)",
-        "Saturation (%)",
-        "Lactate (mmol/L)"
-      ],
-      "ref_vals": [
-        "7.31-7.41",
-        "41-51",
-        "40-60",
-        "22-28",
-        "60-80",
-        "0.6-2.2"
-      ],
-      "val":[
-        7.16,
-        44,
-        50,
+      "val": [
+        0.5,
         24,
+        0.8,
+        40,
+        91,
+        97,
+        7.38
+      ],
+      "units": [
+        "mEq/L",
+        "mEq/L",
+        "mmol/L",
+        "mmHg",
+        "mmHg",
+        "%",
+        null
+      ]
+    }
+  },
+  "Cardiac Markers": {
+    "id": "Cardiac Markers",
+    "title": "Cardiac Markers",
+    "rows": {
+      "names": [
+        "BNP",
+        "CKMB",
+        "CK",
+        "hs-cTnl",
+        "Mb",
+        "NT-proBNP",
+        "Tnl",
+        "TnT"
+      ],
+      "ref_vals": [
+        "< 100",
+        "0   -   5",
+        "20  - 200",
+        "< 0.012",
+        "< 90",
+        "< 125",
+        "< 0.04",
+        "< 0.01"
+      ],
+      "val": [
         70,
-        1.4
+        3,
+        120,
+        0.006,
+        65,
+        80,
+        0.02,
+        0.005
+      ],
+      "units": [
+        "pg/mL",
+        "ng/mL",
+        "U/L",
+        "g/dL",
+        "ng/ml",
+        "pg/mL",
+        "ng/ml",
+        "ng/mL"
+      ]
+    }
+  },
+  "Chem 7 (Basic Metabolic Panel)": {
+    "id": "Chem 7",
+    "title": "Chem 7 (Basic Metabolic Panel)",
+    "rows": {
+      "names": [
+        "BUN",
+        "CO\u2082",
+        "Cl-",
+        "Cr",
+        "Glu",
+        "K+",
+        "Na+"
+      ],
+      "ref_vals": [
+        "7   - 20",
+        "22  - 29",
+        "98  - 106",
+        "0.6 - 1.3",
+        "70  - 99",
+        "3.5 - 5.0",
+        "135 - 145"
+      ],
+      "val": [
+        13,
+        25,
+        104,
+        0.9,
+        85,
+        4.2,
+        140
+      ],
+      "units": [
+        "mg/dL",
+        "mEq/L",
+        "mEq/L",
+        "mg/dL",
+        "mg/dL",
+        "mEq/L",
+        "mEq/L"
+      ]
+    }
+  },
+  "Chem 12 (Comprehensive Metabolic Panel)": {
+    "id": "Chem 12",
+    "title": "Chem 12 (Comprehensive Metabolic Panel)",
+    "rows": {
+      "names": [
+        "ALT",
+        "Alb",
+        "ALP",
+        "AST",
+        "TP",
+        "BUN",
+        "CO\u2082",
+        "Cl-",
+        "Cr",
+        "Glu",
+        "K+",
+        "Na+"
+      ],
+      "ref_vals": [
+        "7   - 56",
+        "3.5 - 5.0",
+        "44  - 147",
+        "10  - 40",
+        "6.0 - 8.3",
+        "7   - 20",
+        "22  - 29",
+        "98  - 106",
+        "0.6 - 1.3",
+        "70  - 99",
+        "3.5 - 5.0",
+        "135 - 145"
+      ],
+      "val": [
+        32,
+        4.2,
+        94,
+        25,
+        7.2,
+        13,
+        25,
+        104,
+        0.9,
+        85,
+        4.2,
+        140
+      ],
+      "units": [
+        "U/L",
+        "g/dL",
+        "IU/L",
+        "U/L",
+        "g/dL",
+        "mg/dL",
+        "mEq/L",
+        "mEq/L",
+        "mg/dL",
+        "mg/dL",
+        "mEq/L",
+        "mEq/L"
+      ]
+    }
+  },
+  "Complete Blood Count (CBC)": {
+    "id": "CBC",
+    "title": "Complete Blood Count (CBC)",
+    "rows": {
+      "names": [
+        "Hct",
+        "Hgb",
+        "MCH",
+        "MCHC",
+        "MCV",
+        "MPV",
+        "Plt",
+        "RBC",
+        "RDW",
+        "WBC"
+      ],
+      "ref_vals": [
+        "41-53(M)/36-46(F)",
+        "13.5-17.5(M)/12.0-15.5(F)",
+        "27  -  33",
+        "32  -  36",
+        "80  - 100",
+        "7.5 -11.5",
+        "150 - 450",
+        "4.2 - 5.9",
+        "11.5-14.5",
+        "4.5 -11.0"
+      ],
+      "val": [
+        "--",
+        "--",
+        30,
+        34,
+        91,
+        9.5,
+        300,
+        4.9,
+        13.0,
+        8.5
+      ],
+      "units": [
+        "%",
+        "g/dl",
+        "pg/cell",
+        "g/dL",
+        "fL",
+        "fL",
+        "10^3/\u00b5L",
+        "10^6/\u00b5L",
+        "%",
+        "10^3/\u00b5L"
+      ]
+    }
+  },
+  "Thyroid Panel": {
+    "id": "Thyroid Panel",
+    "title": "Thyroid panel",
+    "rows": {
+      "names": [
+        "FT3",
+        "FT4",
+        "T4",
+        "T3"
+      ],
+      "ref_vals": [
+        "2.3 - 4.1",
+        "0.8 - 2.7",
+        "4.5 -11.2",
+        "80  - 200"
+      ],
+      "val": [
+        3.1,
+        1.8,
+        8.1,
+        140
+      ],
+      "units": [
+        "pg/mL",
+        "ng/dL",
+        "mcg/dL",
+        "ng/dL"
+      ]
+    }
+  },
+  "Venous Blood Gases (VBG)": {
+    "id": "VBG",
+    "title": "Venous Blood Gases (VBG)",
+    "rows": {
+      "names": [
+        "PvCO\u2082",
+        "PvO\u2082",
+        "pH"
+      ],
+      "ref_vals": [
+        "41  -  51",
+        "30  -  40",
+        "7.31-7.41"
+      ],
+      "val": [
+        46,
+        35,
+        7.36
+      ],
+      "units": [
+        "mmHg",
+        "mmHg",
+        "venous"
+      ]
+    }
+  },
+  "Lipid Panel": {
+    "id": "Lipid Panel",
+    "title": "Lipid Panel",
+    "rows": {
+      "names": [
+        "ApoA1",
+        "ApoB",
+        "Lp(a)",
+        "Chol",
+        "TG"
+      ],
+      "ref_vals": [
+        "110 - 180",
+        "40  - 125",
+        "< 30",
+        "< 200",
+        "< 150"
+      ],
+      "val": [
+        145,
+        83,
+        15,
+        100,
+        75
+      ],
+      "units": [
+        "mg/dL",
+        "mg/dL",
+        "mg/dl",
+        "mg/dl",
+        "mg/dL"
+      ]
+    }
+  },
+  "Coagulation Panel": {
+    "id": "Coagulation Panel",
+    "title": "Coagulation Panel",
+    "rows": {
+      "names": [
+        "D-Di",
+        "Fib",
+        "PT",
+        "TT"
+      ],
+      "ref_vals": [
+        "< 500",
+        "200 - 400",
+        "11  -13.5",
+        "14  -  19"
+      ],
+      "val": [
+        250,
+        83,
+        300,
+        12.3,
+        17
+      ],
+      "units": [
+        "ng/mL",
+        "md/dL",
+        "sec",
+        "sec"
       ]
     }
   }

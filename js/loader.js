@@ -1,10 +1,44 @@
 let canvas = new fabric.Canvas('canvas');
+let fieldCount = 0
 const liveToggle = document.getElementById('livePreviewToggle');
 let originalBgImg = null;
 let originalImageData = null; // Store the base64 image data
 let multipage_enabled = false;
 let multipage_template = false;
 let labs_enabled = false;
+let default_settings = null;
+
+function main() {
+fetch('templates_json/templates.json')
+  .then(res => res.json())
+  .then(files => {
+    const selector = document.getElementById('templateSelector');
+    files.forEach(file => {
+      const option = document.createElement('option');
+      option.value = file;
+      option.textContent = file.replace('.json', '').replace(/_/g, ' ');
+      selector.appendChild(option);
+    });
+  })
+  .catch(err => {
+    console.error("Failed to load template list:", err);
+  });
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+  initializeCanvas();
+});
+
+// Example usage:
+const settings_path = "default_settings.json"; // Replace with your actual server URL
+fetchJSON(settings_path)
+  .then((data) => {
+    if (data) {
+      default_settings = data;
+    }
+  });
+
+}
 
 function loadTemplate(selectedFile="") {
   initializeCanvas();
@@ -95,6 +129,8 @@ function loadTemplate(selectedFile="") {
 
 function populateInputFields() {
   const form = document.getElementById('dynamicFields');
+  const fieldsPanel = document.getElementById('fieldsPanel');
+  fieldsPanel.innerHTML = '';
   form.innerHTML = '';
   canvas.getObjects().forEach(obj => {
     const label = document.createElement('label');
@@ -156,35 +192,4 @@ function downloadImage({_canvas=null, title=null} = {}) {
   link.click();
 }
 
-fetch('templates_json/templates.json')
-  .then(res => res.json())
-  .then(files => {
-    const selector = document.getElementById('templateSelector');
-    files.forEach(file => {
-      const option = document.createElement('option');
-      option.value = file;
-      option.textContent = file.replace('.json', '').replace(/_/g, ' ');
-      selector.appendChild(option);
-    });
-  })
-  .catch(err => {
-    console.error("Failed to load template list:", err);
-  });
-
-document.getElementById('livePreviewToggle').addEventListener('change', () => {
-  document.querySelectorAll('#dynamicFields input').forEach(input => {
-    input.dispatchEvent(new Event('input'));
-  });
-});
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-  initializeCanvas();
-});
-
-// Handle window resize with debouncing
-let resizeTimeout;
-window.addEventListener('resize', function() {
-  clearTimeout(resizeTimeout);
-  // resizeTimeout = setTimeout(handleResize, 100);
-});
+main();

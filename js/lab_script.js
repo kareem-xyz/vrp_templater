@@ -369,7 +369,10 @@ function addLabData(labId) {
     return;
   }
 
-  const { names = [], ref_vals = [] } = lab.rows;
+  const names = lab.rows.names;
+  const ref_vals = lab.rows.ref_vals;
+  const units = lab.rows.units
+
   const rowCount = Math.max(names.length, ref_vals.length);
 
   if (rowCount === 0) {
@@ -389,9 +392,10 @@ function addLabData(labId) {
     });
   }
 
+  // If units is a column, it adds it to title this is temporary until units is a column.
   for (let i = 0; i < rowCount; i++) {
     rowsData.push({
-      name: names[i] || '',
+      name: units[i] ? `${names[i]} (${units[i]})` : names[i] || '',
       reference: ref_vals[i] || '',
       value: ''
     });

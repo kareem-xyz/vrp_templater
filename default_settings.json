@@ -1,0 +1,22 @@
+{
+    "Textstyle":{
+        "fontsize":100,
+        "fill":"black",
+        "fontFamily":"Times New Roman",
+        "fontWeight":"normal",
+        "fontStyle": "normal",
+        "textAlign": "left"
+    },
+    "fonts": [
+                "Arial",
+                "Arial Black",
+                "Comic Sans MS",
+                "Courier New",
+                "Georgia",
+                "Helvetica",
+                "Impact",
+                "Times New Roman",
+                "Trebuchet MS",
+                "Verdana"
+            ]
+}

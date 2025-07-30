@@ -363,10 +363,3 @@ document.addEventListener('DOMContentLoaded', function() {
   initializeCanvas();
   updateFieldPanel();
 });
-
-// Handle window resize with debouncing
-// let resizeTimeout;
-// window.addEventListener('resize', function() {
-//   clearTimeout(resizeTimeout);
-//   resizeTimeout = setTimeout(handleResize, 250);
-// });
