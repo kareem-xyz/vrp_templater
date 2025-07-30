@@ -6,16 +6,10 @@ Multi Canvas:
 
 Labs:
 - Embolden the Titles of each Lab.
-- Get a reference for Labs from Koury or Caughey. Populate the labs.json with that.
 - Clear up the Show Summary and useless buttons.
-- Get info from Koury about what shortcuts do they want. Just Normal vlaues or something else?
-- Fix: Checking one lab should not enable every other checked lab.
-
 
 Necessary UI Things:
 - "Universal Formatting Buttons (B I -)" (Bold, Italics, and so on). Can map the buttons the add the points **, _, - around the highlighted text.
-- "Add Field" button to the labs.html and index.html. This one should requires a simple modification. Can probably be imported from the builder.js files.
-- "Add Textbox" button too.
 
 Templates:
 - Add Extra Fields to the MAR template, particularly next to the title.
