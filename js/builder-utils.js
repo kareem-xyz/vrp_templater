@@ -59,17 +59,17 @@ function addText(type = 'text') {
   appendTextUI('fieldsPanel', uiElement);
 }
 
-function makeTextUI(obj, index) {
+function makeTextUI(obj, index=0) {
   const wrapper = document.createElement('div');
-  wrapper.className = 'mb-3 p-3 border rounded bg-light';
+  wrapper.className = 'mb-1 p-1 border rounded';
 
   // Header with field label and style buttons
   const headerRow = document.createElement('div');
-  headerRow.className = 'd-flex align-items-center justify-content-between mb-2';
+  headerRow.className = 'd-flex align-items-center justify-content-between mb-1';
 
   const fieldLabel = document.createElement('strong');
-  fieldLabel.innerText = `Field ${index + 1}`;
-  fieldLabel.className = 'text-primary';
+  fieldLabel.innerText = obj.label || `Field ${index + 1}`;
+  fieldLabel.className = 'text';
   headerRow.appendChild(fieldLabel);
 
   let formattingRow = document.createElement('div');
@@ -93,25 +93,19 @@ function makeTextUI(obj, index) {
   headerRow.append(formattingRow);
   wrapper.appendChild(headerRow);
 
-  // Text content input
-  const textLabel = document.createElement('label');
-  textLabel.innerText = 'Text:';
-  textLabel.className = 'form-label mb-1';
-  wrapper.appendChild(textLabel);
-
   let nameInput;
   if (obj.type === 'textbox') {
     nameInput = document.createElement('textarea');
-    nameInput.className = 'form-control mb-2';
+    nameInput.className = 'form-control mb-1';
     nameInput.rows = 3;
   } else {
     nameInput = document.createElement('input');
     nameInput.type = 'text';
-    nameInput.className = 'form-control mb-2';
+    nameInput.className = 'form-control mb-1';
   }
 
   nameInput.value = obj.text || '';
-  nameInput.placeholder = 'Enter field text...';
+  nameInput.placeholder = obj.text ||'Enter field text...';
   nameInput.oninput = () => {
     obj.set('text', nameInput.value);
     obj.label = nameInput.value || `Field ${index + 1}`;
@@ -130,12 +124,12 @@ function appendTextUI(containerId, htmlElement) {
 
 function createStyleButtons(obj) {
   const container = document.createElement('div');
-  container.className = 'd-flex align-items-center gap-2';
+  container.className = 'd-flex align-items-center gap-1';
 
   // Show/Hide formatting toggle button
   const toggleBtn = document.createElement('button');
   toggleBtn.innerHTML = '+';
-  toggleBtn.className = 'btn btn-outline-secondary btn-sm';
+  toggleBtn.className = 'btn btn-outline-primary btn-sm';
   toggleBtn.title = 'Show/Hide Formatting';
   
   // Style buttons container (initially hidden)
@@ -150,11 +144,11 @@ function createStyleButtons(obj) {
     if (isVisible) {
       styleContainer.className = 'd-flex align-items-center gap-1 flex-wrap';
       styleContainer.style.display = 'flex';
-      toggleBtn.className = 'btn btn-secondary btn-sm';
+      toggleBtn.className = 'btn btn-primary btn-sm';
     } else {
       styleContainer.className = 'd-none';
       styleContainer.style.display = 'none';
-      toggleBtn.className = 'btn btn-outline-secondary btn-sm';
+      toggleBtn.className = 'btn btn-outline-primary btn-sm';
     }
   };
 

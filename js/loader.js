@@ -133,41 +133,45 @@ function populateInputFields() {
   fieldsPanel.innerHTML = '';
   form.innerHTML = '';
   canvas.getObjects().forEach(obj => {
-    const label = document.createElement('label');
-    label.className = 'form-label mt-2';
-    label.innerText = obj.label || 'Field';
+    let wrapper = makeTextUI(obj)
+    form.appendChild(wrapper);
 
-    let input;
-    if (obj.type == "text") {
-    input = document.createElement('input');
-    }
+    // return;
+    // const label = document.createElement('label');
+    // label.className = 'form-label mt-2';
+    // label.innerText = obj.label || 'Field';
 
-    else if (obj.type == "textbox") {
-    input = document.createElement('textarea');
-    input.rows = 4;
-    }
+    // let input;
+    // if (obj.type == "text") {
+    // input = document.createElement('input');
+    // }
 
-    input.type = 'text';
-    input.className = 'form-control';
-    input.value = obj.text || '';
+    // else if (obj.type == "textbox") {
+    // input = document.createElement('textarea');
+    // input.rows = 4;
+    // }
 
-    let debounceTimer;
+    // input.type = 'text';
+    // input.className = 'form-control';
+    // input.value = obj.text || '';
 
-    input.addEventListener('input', () => {
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => {
-        const { cleanText, styles } = parseMarkdownToStyledText(input.value);
+    // let debounceTimer;
 
-        obj.text = cleanText;
-        obj.styles = styles;
+    // input.addEventListener('input', () => {
+    //   clearTimeout(debounceTimer);
+    //   debounceTimer = setTimeout(() => {
+    //     const { cleanText, styles } = parseMarkdownToStyledText(input.value);
 
-        canvas.renderAll();
-      }, 500); // wait 300 ms after user stops typing
-    });
+    //     obj.text = cleanText;
+    //     obj.styles = styles;
+
+    //     canvas.renderAll();
+    //   }, 500); // wait 300 ms after user stops typing
+    // });
 
 
-    form.appendChild(label);
-    form.appendChild(input);
+    // form.appendChild(label);
+    // form.appendChild(input);
   });
 }
 
