@@ -90,6 +90,11 @@
 <script src="js/markdown.js"></script>
 <script src="js/lab_class.js"></script>
 <script src="js/lab_script.js"></script>
-
+<script>
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', function() {
+  loadTemplate("lab_test.json");
+  document.getElementById("selector-div").hidden = true;
+});</script>
 </body>
 </html>

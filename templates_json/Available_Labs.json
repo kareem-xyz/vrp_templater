@@ -87,7 +87,7 @@
       ]
     }
   },
-  "Chem 7 (Basic Metabolic Panel)": {
+  "Basic Metabolic Panel": {
     "id": "Chem 7",
     "title": "Chem 7 (Basic Metabolic Panel)",
     "rows": {
@@ -129,9 +129,9 @@
       ]
     }
   },
-  "Chem 12 (Comprehensive Metabolic Panel)": {
+  "Comprehensive Metabolic Panel": {
     "id": "Chem 12",
-    "title": "Chem 12 (Comprehensive Metabolic Panel)",
+    "title": "Comprehensive Metabolic Panel",
     "rows": {
       "names": [
         "ALT",
