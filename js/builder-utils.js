@@ -107,7 +107,11 @@ function makeTextUI(obj, index=0) {
   nameInput.value = obj.text || '';
   nameInput.placeholder = obj.text ||'Enter field text...';
   nameInput.oninput = () => {
-    obj.set('text', nameInput.value);
+    // obj.set('text', nameInput.value);
+    const { cleanText, styles } = parseMarkdownToStyledText(nameInput.value);
+    obj.text = cleanText;
+    obj.styles = styles;
+
     obj.label = nameInput.value || `Field ${index + 1}`;
     canvas.renderAll();
   };
