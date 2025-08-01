@@ -4,8 +4,6 @@ function addText(type = 'text') {
     return;
   }
   
-  fieldCount++;
-  
   // Calculate position relative to image bounds
   const bgImg = canvas.backgroundImage;
   const startX = bgImg.left + 20;
@@ -55,11 +53,11 @@ function addText(type = 'text') {
   canvas.renderAll();
   
   // Create and append UI for this new text object
-  const uiElement = makeTextUI(textObject, fieldCount - 1);
+  const uiElement = makeTextUI(textObject, fieldCount);
   appendTextUI('fieldsPanel', uiElement);
 }
 
-function makeTextUI(obj, index=0) {
+function makeTextUI(obj, index=null) {
   const wrapper = document.createElement('div');
   wrapper.className = 'mb-1 p-1 border rounded';
 
@@ -68,7 +66,8 @@ function makeTextUI(obj, index=0) {
   headerRow.className = 'd-flex align-items-center justify-content-between mb-1';
 
   const fieldLabel = document.createElement('strong');
-  fieldLabel.innerText = obj.label || `Field ${index + 1}`;
+  if (!index) {index = fieldCount};
+  fieldLabel.innerText = obj.label || `Field ${index}`;
   fieldLabel.className = 'text';
   headerRow.appendChild(fieldLabel);
 
@@ -104,20 +103,21 @@ function makeTextUI(obj, index=0) {
     nameInput.className = 'form-control mb-1';
   }
 
+  nameInput.id = `obj-${index}`;
   nameInput.value = obj.text || '';
   nameInput.placeholder = obj.text ||'Enter field text...';
   nameInput.oninput = () => {
     // obj.set('text', nameInput.value);
-    const { cleanText, styles } = parseMarkdownToStyledText(nameInput.value);
+    const { cleanText, styles } = parseMarkdownToStyledText(nameInput.value, obj.fontSize);
     obj.text = cleanText;
     obj.styles = styles;
 
-    obj.label = nameInput.value || `Field ${index + 1}`;
+    obj.label = nameInput.value || `Field ${index}`;
     canvas.renderAll();
   };
 
   wrapper.appendChild(nameInput);
-
+  fieldCount = fieldCount + 1;
   return wrapper;
 }
 

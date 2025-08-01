@@ -1,5 +1,5 @@
 let canvas = new fabric.Canvas('canvas-0');
-let fieldCount = 0
+let fieldCount = 0;
 const liveToggle = document.getElementById('livePreviewToggle');
 let originalBgImg = null;
 let originalImageData = null; // Store the base64 image data
@@ -133,46 +133,9 @@ function populateInputFields() {
   const fieldsPanel = document.getElementById('fieldsPanel');
   fieldsPanel.innerHTML = '';
   form.innerHTML = '';
-  canvas.getObjects().forEach(obj => {
-    let wrapper = makeTextUI(obj)
+  canvas.getObjects().forEach((obj, index) => {
+    let wrapper = makeTextUI(obj, index)
     form.appendChild(wrapper);
-
-    // return;
-    // const label = document.createElement('label');
-    // label.className = 'form-label mt-2';
-    // label.innerText = obj.label || 'Field';
-
-    // let input;
-    // if (obj.type == "text") {
-    // input = document.createElement('input');
-    // }
-
-    // else if (obj.type == "textbox") {
-    // input = document.createElement('textarea');
-    // input.rows = 4;
-    // }
-
-    // input.type = 'text';
-    // input.className = 'form-control';
-    // input.value = obj.text || '';
-
-    // let debounceTimer;
-
-    // input.addEventListener('input', () => {
-    //   clearTimeout(debounceTimer);
-    //   debounceTimer = setTimeout(() => {
-    //     const { cleanText, styles } = parseMarkdownToStyledText(input.value);
-
-    //     obj.text = cleanText;
-    //     obj.styles = styles;
-
-    //     canvas.renderAll();
-    //   }, 500); // wait 300 ms after user stops typing
-    // });
-
-
-    // form.appendChild(label);
-    // form.appendChild(input);
   });
 }
 

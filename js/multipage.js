@@ -195,6 +195,7 @@ function cloneObjectsOnly(originalCanvas, newCanvas, resolve) {
   
   objects.forEach(obj => {
     obj.clone(clonedObj => {
+      clonedObj.styles={}; // don't copy styles because text is changing
       newCanvas.add(clonedObj);
       clonedCount++;
       

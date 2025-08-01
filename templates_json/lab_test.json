@@ -54,6 +54,7 @@
       "pathSide": "left",
       "pathAlign": "baseline",
       "minWidth": 20,
+      "maxwidth":20,
       "splitByGrapheme": false,
       "label": "t1-name",
       "selectable": true,
@@ -617,7 +618,7 @@
       "fontFamily": "Arial",
       "fontWeight": "bold",
       "fontSize": 32.20211,
-      "text": "Test Name",
+      "text": "Test",
       "underline": false,
       "overline": false,
       "linethrough": false,
@@ -632,7 +633,7 @@
       "pathStartOffset": 0,
       "pathSide": "left",
       "pathAlign": "baseline",
-      "label": "Test Name"
+      "label": "Test"
     },
     {
       "type": "text",
@@ -669,7 +670,7 @@
       "fontFamily": "Arial",
       "fontWeight": "bold",
       "fontSize": 32.20211,
-      "text": "Test Name",
+      "text": "Test",
       "underline": false,
       "overline": false,
       "linethrough": false,
@@ -684,7 +685,7 @@
       "pathStartOffset": 0,
       "pathSide": "left",
       "pathAlign": "baseline",
-      "label": "Test Name"
+      "label": "Test"
     },
     {
       "type": "textbox",
