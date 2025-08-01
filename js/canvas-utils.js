@@ -1,24 +1,25 @@
 currentImageScale=1;
 
 // Initialize canvas with container constraints the same as canvas-box, which is constrained by Bootstrap col
-function initializeCanvas() {
+function initializeCanvas(cnvs=null) {
   const container = document.querySelector('.canvas-box');
   const containerWidth = container.clientWidth; // Account for scaling rounding, which can slightly cause overflow
   const containerHeight = container.clientHeight;
-
-  canvas.setDimensions({
+  if (!cnvs) {cnvs = canvas}
+  cnvs.setDimensions({
   width: containerWidth,
   height: containerHeight
 })
-  canvas.renderAll();
+  cnvs.renderAll();
 
   return [containerWidth, containerHeight];
 }
 
 // Fit image within the fixed canvas bounds
-function fitImageToCanvas(img) {
-  const canvasWidth = canvas.getWidth();
-  const canvasHeight = canvas.getHeight();
+function fitImageToCanvas(img, cnvs=null) {
+  if (!cnvs) {cnvs = canvas;}
+  const canvasWidth = cnvs.getWidth();
+  const canvasHeight = cnvs.getHeight();
   
   // Calculate scale to fit image within canvas bounds
   let scale = Math.min(
@@ -50,21 +51,21 @@ function fitImageToCanvas(img) {
   let newW = img.width * scale;
   let newH = img.height * scale;
 
-  canvas.setDimensions({
+  cnvs.setDimensions({
     width: newW,
     height: newH
   }, false)
 
-  canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
-  canvas.renderAll();
-  console.log(canvas.getWidth(), canvas.getHeight(), img.width * scale, img.height* scale)
+  cnvs.setBackgroundImage(img, cnvs.renderAll.bind(cnvs));
+  cnvs.renderAll();
+  console.log(cnvs.getWidth(), cnvs.getHeight(), img.width * scale, img.height* scale)
   return scale;
 }
 
 // Rescale all text objects when image scale changes
-function rescaleTextObjects(scaleRatio) {
-  
-  canvas.getObjects().filter(obj =>
+function rescaleTextObjects(scaleRatio, cnvs=null) {
+  if (!cnvs) {cnvs = canvas;}
+  cnvs.getObjects().filter(obj =>
   obj.type === 'text' || obj.type === 'textbox'
   ).forEach(obj => {
     // Store original data if not already stored
@@ -90,19 +91,20 @@ function rescaleTextObjects(scaleRatio) {
 }
 
 // Responsive canvas handling
-function handleResize() {
+function handleResize(cnvs=null) {
   if (!originalBgImg) return; 
+  if (!cnvs) {cnvs = canvas;}
   setTimeout(() => {
     const container = document.querySelector('.canvas-box');
     const newWidth = container.clientWidth;
     const newHeight = container.clientHeight;
     
     // Only resize if container size actually changed
-    if (Math.abs(canvas.getWidth() - newWidth) > 1.0 || 
-        Math.abs(canvas.getHeight() - newHeight) > 1.0) {
+    if (Math.abs(cnvs.getWidth() - newWidth) > 1.0 || 
+        Math.abs(cnvs.getHeight() - newHeight) > 1.0) {
       
-      canvas.setWidth(newWidth);
-      canvas.setHeight(newHeight);
+      cnvs.setWidth(newWidth);
+      cnvs.setHeight(newHeight);
       fitImageToCanvas(originalBgImg);
     }
   }, 100);
@@ -135,4 +137,9 @@ async function fetchJSON(url) {
       }
     });
   */
+}
+
+function HideMainCanvas(bool) {
+  const canvas0 = document.getElementsByClassName("canvas-col");
+  canvas0[0].hidden = bool;
 }

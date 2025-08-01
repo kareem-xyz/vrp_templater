@@ -15,7 +15,7 @@
     <a class="navbar-brand fw-bold me-4" href="#">VR Patients</a>
     <a class="nav-link px-2" href="https://kareem-xyz.github.io/vrp_templater/index.html">Loader</a>
     <a class="nav-link px-2" href="https://kareem-xyz.github.io/vrp_templater/builder.html">Builder</a>
-    <a class="nav-link px-2" href="/labs.html">Labs</a>
+    <a class="nav-link px-2" href="https://kareem-xyz.github.io/vrp_templater/labs.html">Labs</a>
   </div>
 </nav>
 
@@ -25,7 +25,7 @@
 
 <!-- Left Column: Scrollable Template selector + dynamic inputs -->
 <div class="col-md-4 mb-5">
-  <div class="mb-3" id="selector-div">
+  <div hidden class="mb-3" id="selector-div">
     <label class="form-label">Choose Template:</label>
     <select class="form-select" id="templateSelector" onchange="loadTemplate()">
       <option disabled selected value="">-- Select Template --</option>
@@ -33,7 +33,7 @@
   </div>
   
   <div class="m-2" id="buttons-div">
-    <button class="btn btn-success" onclick="downloadCanvas()">Download Image</button>
+    <button class="btn btn-success" onclick="downloadCanvas()">Download PNG</button>
     <div class="form-check form-switch m-2" id="multipage-div" hidden>
       <input class="form-check-input" type="checkbox" role="switch" id="multipage-switch">
       <label class="form-check-label" for="multipageSwitch">Multi-Page Mode</label>
@@ -41,7 +41,7 @@
   </div>
 
   <!-- Lab Management Controls -->
-  <div class="mb-3 border rounded p-2 bg-light">
+  <div hidden class="mb-3 border rounded p-2 bg-light">
     <h6 class="mb-2">Lab Management</h6>
     <div class="d-flex gap-2 flex-wrap">
       <button class="btn btn-sm btn-outline-primary" onclick="manualConsolidate()" title="Move labs to fill gaps in earlier tables">
@@ -60,7 +60,7 @@
   </div>
 
   <!-- Scrollable Lab List -->
-  <div class="overflow-auto pe-2 mb-5" style="max-height: 50vh;">
+  <div class="overflow-auto pe-2 mb-5" style="max-height: 70vh;">
     <h6 class="mb-2">Available Labs</h6>
     <div id="lab-list-container">
       <div class="text-center text-muted p-3">
@@ -70,14 +70,13 @@
   </div>
 </div>
 
+
     <!-- Right Column: Canvas display -->
-    <div class="col-md-8 canvas-col">
-      <div class="canvas-box">
-        <canvas id="canvas"></canvas>
-      </div>
-      <div class="form-check form-switch live-preview-switch">
-        <input class="form-check-input" type="checkbox" id="livePreviewToggle">
-        <label class="form-check-label" for="livePreviewToggle">Live Preview</label>
+    <div class="col-md-8" id="canvas-div">
+      <div class="col canvas-col">
+        <div class="canvas-box">
+          <canvas id="canvas-0"></canvas>
+        </div>
       </div>
     </div>
   </div>

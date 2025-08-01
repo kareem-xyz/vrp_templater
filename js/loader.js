@@ -1,4 +1,4 @@
-let canvas = new fabric.Canvas('canvas');
+let canvas = new fabric.Canvas('canvas-0');
 let fieldCount = 0
 const liveToggle = document.getElementById('livePreviewToggle');
 let originalBgImg = null;
@@ -42,6 +42,7 @@ fetchJSON(settings_path)
 
 function loadTemplate(selectedFile="") {
   initializeCanvas();
+  clearGeneratedPages();
 
   // If passed filename
   if (!selectedFile){

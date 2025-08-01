@@ -15,7 +15,7 @@
     <a class="navbar-brand fw-bold me-4" href="#">VR Patients</a>
     <a class="nav-link px-2" href="https://kareem-xyz.github.io/vrp_templater/index.html">Loader</a>
     <a class="nav-link px-2" href="https://kareem-xyz.github.io/vrp_templater/builder.html">Builder</a>
-    <a class="nav-link px-2" href="/labs.html">Labs</a>
+    <a class="nav-link px-2" href="https://kareem-xyz.github.io/vrp_templater/labs.html">Labs</a>
   </div>
 </nav>
 
@@ -43,10 +43,11 @@
               <li><button class="dropdown-item" onclick="addText('textarea')">+ Multi-line</button></li>
             </ul>
           </div>
-        <button class="btn btn-success m-1" onclick="downloadCanvas()">Download PNG</button>
+        <button class="btn btn-success m-1" id="download-button" onclick="downloadCanvas()">Download PNG(s)</button>
         <div class="form-check form-switch m-2" id="multipage-div" hidden>
           <input class="form-check-input" type="checkbox" role="switch" id="multipage-switch">
           <label class="form-check-label" for="multipageSwitch">Multi-Page Mode</label>
+          <a class="btn btn-sm btn-outline-primary" id="multipage-refresh" onclick="refreshPages()">Refresh Pages</a>
         </div>
       </div>
 
@@ -57,9 +58,11 @@
     </div>
 
     <!-- Right Column: Canvas display -->
-    <div class="col-md-6 canvas-col">
-      <div class="canvas-box">
-        <canvas id="canvas"></canvas>
+    <div class="col-md-6" id="canvas-div">
+      <div class="col canvas-col">
+        <div class="canvas-box">
+          <canvas id="canvas-0"></canvas>
+        </div>
       </div>
     </div>
   </div>

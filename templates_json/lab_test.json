@@ -55,7 +55,14 @@
       "pathAlign": "baseline",
       "minWidth": 20,
       "splitByGrapheme": false,
-      "label": "t1-name"
+      "label": "t1-name",
+      "selectable": true,
+      "hasControls": false,
+      "lockMovementX": true,
+      "lockMovementY": true,
+      "lockScalingX": true,
+      "lockScalingY": true,
+      "lockRotation": true
     },
     {
       "type": "textbox",
@@ -110,7 +117,14 @@
       "pathAlign": "baseline",
       "minWidth": 20,
       "splitByGrapheme": false,
-      "label": "t1_value"
+      "label": "t1_value",
+      "selectable": true,
+      "hasControls": false,
+      "lockMovementX": true,
+      "lockMovementY": true,
+      "lockScalingX": true,
+      "lockScalingY": true,
+      "lockRotation": true
     },
     {
       "type": "textbox",
@@ -165,7 +179,14 @@
       "pathAlign": "baseline",
       "minWidth": 20,
       "splitByGrapheme": false,
-      "label": "t1_ref_val"
+      "label": "t1_ref_val",
+      "selectable": true,
+      "hasControls": false,
+      "lockMovementX": true,
+      "lockMovementY": true,
+      "lockScalingX": true,
+      "lockScalingY": true,
+      "lockRotation": true
     },
     {
       "type": "textbox",
@@ -220,7 +241,14 @@
       "pathAlign": "baseline",
       "minWidth": 20,
       "splitByGrapheme": false,
-      "label": "t1_name"
+      "label": "t2_name",
+      "selectable": true,
+      "hasControls": false,
+      "lockMovementX": true,
+      "lockMovementY": true,
+      "lockScalingX": true,
+      "lockScalingY": true,
+      "lockRotation": true
     },
     {
       "type": "textbox",
@@ -275,7 +303,14 @@
       "pathAlign": "baseline",
       "minWidth": 20,
       "splitByGrapheme": false,
-      "label": "t2_val"
+      "label": "t2_val",
+      "selectable": true,
+      "hasControls": false,
+      "lockMovementX": true,
+      "lockMovementY": true,
+      "lockScalingX": true,
+      "lockScalingY": true,
+      "lockRotation": true
     },
     {
       "type": "textbox",
@@ -330,7 +365,14 @@
       "pathAlign": "baseline",
       "minWidth": 20,
       "splitByGrapheme": false,
-      "label": "t2_ref_val"
+      "label": "t2_ref_val",
+      "selectable": true,
+      "hasControls": false,
+      "lockMovementX": true,
+      "lockMovementY": true,
+      "lockScalingX": true,
+      "lockScalingY": true,
+      "lockRotation": true
     },
     {
       "type": "text",
