@@ -43,6 +43,7 @@ fetchJSON(settings_path)
 function loadTemplate(selectedFile="") {
   initializeCanvas();
   clearGeneratedPages();
+  HideMainCanvas(false);
 
   // If passed filename
   if (!selectedFile){
