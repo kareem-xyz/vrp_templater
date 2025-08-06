@@ -48,15 +48,22 @@ async function processPages(fabricCanvas=null, desiredHeight=null) {
   if (!targetbox) return false;
 
   desiredHeight = targetbox.multipage_height;
-  const wrappedLines = targetbox._textLines.map(line => line.join(''));
-  const lineHeight = targetbox.getHeightOfLine(0);
-  const lineGroups = processTextbox(wrappedLines, desiredHeight, lineHeight);
+const wrappedLines = targetbox._textLines.map(line => line.join(''));
+const wrappedStyles = convertUnwrappedStylesToWrapped(targetbox);
+  const lineHeights = [];
+
+  for (i = 0; i < wrappedLines.length; i++) {
+    lineHeights.push(targetbox.getHeightOfLine(i));
+  }
+
+  // const lineHeights = targetbox.getHeightOfLine(0);
+  const [lineGroups, lineStyles] = processTextbox(wrappedLines, desiredHeight, lineHeights, wrappedStyles);
   
   // Clear existing pages array
   pagesArray = [];
   
   for (let i = 0; i < lineGroups.length; i++) {
-    let pageCanvas = await makeNextPageCanvas(fabricCanvas, targetIndex, lineGroups[i], i);
+    let pageCanvas = await makeNextPageCanvas(fabricCanvas, targetIndex, lineGroups[i], i, lineStyles[i]);
     await addPageIndex(pageCanvas, targetPageIndex, i+1, lineGroups.length);
     pageCanvas.renderAll();
     pagesArray.push(pageCanvas);
@@ -65,23 +72,37 @@ async function processPages(fabricCanvas=null, desiredHeight=null) {
   return pagesArray;
 }
 
-function processTextbox(textLines, desiredHeight, lineHeight) {
-  let maxLines = Math.round(desiredHeight / lineHeight);
-  
-  if (textLines.length <= maxLines) {
-    return [textLines.join('\n')];
-  } else {
-    let currentPageLines = textLines.slice(0, maxLines);
-    let remainingLines = textLines.slice(maxLines);
-    
-    return [
-      currentPageLines.join('\n'),
-      ...processTextbox(remainingLines, desiredHeight, lineHeight)
-    ];
+function processTextbox(wrappedLines, desiredHeight, lineHeights, wrappedStyles) {
+  const TextBoxes = [];
+  const TextStyles = [];
+
+  let currHeight = 0;
+  let lines = [];
+  let linesStyles = [];
+
+  for (let i = 0; i < lineHeights.length; i++) {
+    const line = wrappedLines[i];
+    const style = wrappedStyles[i] || {};
+
+    currHeight += lineHeights[i];
+    lines.push(line);
+    linesStyles.push(style);
+
+    if (currHeight >= desiredHeight || i === lineHeights.length - 1) {
+      TextBoxes.push([...lines]);
+      TextStyles.push(JSON.parse(JSON.stringify(linesStyles)));
+      lines = [];
+      linesStyles = [];
+      currHeight = 0;
+    }
   }
+
+
+  return [TextBoxes, TextStyles];
 }
 
-function makeNextPageCanvas(fabricCanvas, objectTargetIndex, pageText, pageIndex) {
+
+function makeNextPageCanvas(fabricCanvas, objectTargetIndex, pageText, pageIndex, textstyle) {
   return new Promise((resolve) => {
     // Create the canvas element first
     const newCanvasElement = document.createElement('canvas');
@@ -111,16 +132,16 @@ function makeNextPageCanvas(fabricCanvas, objectTargetIndex, pageText, pageIndex
     if (fabricCanvas.backgroundImage) {
       fabricCanvas.backgroundImage.clone((clonedBg) => {
         newCanvas.setBackgroundImage(clonedBg, () => {
-          cloneObjectsToNewPage(fabricCanvas, newCanvas, objectTargetIndex, pageText, resolve);
+          cloneObjectsToNewPage(fabricCanvas, newCanvas, objectTargetIndex, pageText, resolve, textstyle);
         });
       });
     } else {
-      cloneObjectsToNewPage(fabricCanvas, newCanvas, objectTargetIndex, pageText, resolve);
+      cloneObjectsToNewPage(fabricCanvas, newCanvas, objectTargetIndex, pageText, resolve, textstyle);
     }
   });
 }
 
-function cloneObjectsToNewPage(fabricCanvas, newCanvas, objectTargetIndex, pageText, resolve) {
+function cloneObjectsToNewPage(fabricCanvas, newCanvas, objectTargetIndex, pageText, resolve, textstyle) {
   const objects = fabricCanvas.getObjects();
   let clonedCount = 0;
   
@@ -133,69 +154,24 @@ function cloneObjectsToNewPage(fabricCanvas, newCanvas, objectTargetIndex, pageT
   objects.forEach((obj, index) => {
     obj.clone((clonedObj) => {
       if (index === objectTargetIndex) {
-        clonedObj.text = pageText; // Set the page-specific text
+        clonedObj.text = pageText.join('\n');
+
+        // Reconstruct style map
+        const newStyleMap = {};
+        for (let lineIndex = 0; lineIndex < textstyle.length; lineIndex++) {
+          newStyleMap[lineIndex] = {};
+          for (const [charIndex, style] of Object.entries(textstyle[lineIndex] || {})) {
+            newStyleMap[lineIndex][parseInt(charIndex)] = style;
+          }
+        }
+
+        clonedObj.styles = newStyleMap;
+        clonedObj._styleMap = {}; // Let Fabric rebuild
+
+        clonedObj.initDimensions();
+        clonedObj.setCoords();
+
       }
-      newCanvas.add(clonedObj);
-      clonedCount++;
-      
-      if (clonedCount === objects.length) {
-        newCanvas.renderAll();
-        resolve(newCanvas);
-      }
-    });
-  });
-}
-
-function cloneCanvas(originalCanvas, newId) {
-  return new Promise((resolve) => {
-    const newCanvasElement = document.createElement('canvas');
-    const canvasId = "canvas" + newId;
-    newCanvasElement.id = canvasId;
-    newCanvasElement.width = originalCanvas.getWidth();
-    newCanvasElement.height = originalCanvas.getHeight();
-    
-    let canvasDiv = document.getElementById("canvas-div");
-    let housing_col = document.createElement('div');
-    let housing_box = document.createElement('div');
-
-    housing_col.classList.add("canvas-col","col");
-    housing_box.classList.add("canvas-box");
-
-    housing_box.appendChild(newCanvasElement);
-    housing_col.appendChild(housing_box);
-    canvasDiv.appendChild(housing_col);
-
-    const newCanvas = new fabric.Canvas(canvasId);
-    initializeCanvas(newCanvas);
-    // Copy canvas properties
-    newCanvas.setBackgroundColor(originalCanvas.backgroundColor);
-    
-    // Clone background image if it exists
-    if (originalCanvas.backgroundImage) {
-      originalCanvas.backgroundImage.clone((clonedBg) => {
-        newCanvas.setBackgroundImage(clonedBg, () => {
-          cloneObjectsOnly(originalCanvas, newCanvas, resolve);
-        });
-      });
-    } else {
-      cloneObjectsOnly(originalCanvas, newCanvas, resolve);
-    }
-  });
-}
-
-function cloneObjectsOnly(originalCanvas, newCanvas, resolve) {
-  const objects = originalCanvas.getObjects();
-  let clonedCount = 0;
-  
-  if (objects.length === 0) {
-    newCanvas.renderAll();
-    resolve(newCanvas);
-    return;
-  }
-  
-  objects.forEach(obj => {
-    obj.clone(clonedObj => {
-      clonedObj.styles={}; // don't copy styles because text is changing
       newCanvas.add(clonedObj);
       clonedCount++;
       
@@ -292,6 +268,64 @@ async function addPageIndex(canvas, pageObjectIndex, page_index, num_pages) {
     console.log("Error with writing page number.")
   }
 }
+
+function convertUnwrappedStylesToWrapped(textbox) {
+  const fullText = textbox.text;
+  const originalStyles = textbox.styles;
+  const wrappedLines = textbox._textLines;
+  const wrappedStyles = {};
+
+  // Flatten wrapped lines into a list of [lineIndex, charIndex]
+  const charMap = [];
+  wrappedLines.forEach((line, lineIndex) => {
+    line.forEach((char, charIndex) => {
+      charMap.push({ lineIndex, charIndex });
+    });
+    charMap.push({ lineIndex: null, charIndex: null }); // line break
+  });
+
+  let textPointer = 0; // index in fullText
+  let charPointer = 0; // index in charMap
+
+  const lines = fullText.split('\n');
+  for (let unwrappedLine = 0; unwrappedLine < lines.length; unwrappedLine++) {
+    const line = lines[unwrappedLine];
+
+    for (let i = 0; i < line.length; i++) {
+      const style = originalStyles[unwrappedLine]?.[i];
+      if (!style) {
+        textPointer++;
+        charPointer++;
+        continue;
+      }
+
+      // Find the corresponding wrapped position
+      const mapping = charMap[charPointer];
+      if (!mapping || mapping.lineIndex == null) {
+        console.warn("Could not map character", textPointer, "->", mapping);
+        textPointer++;
+        charPointer++;
+        continue;
+      }
+
+      if (!wrappedStyles[mapping.lineIndex]) {
+        wrappedStyles[mapping.lineIndex] = {};
+      }
+
+      wrappedStyles[mapping.lineIndex][mapping.charIndex] = style;
+
+      textPointer++;
+      charPointer++;
+    }
+
+    // Skip over newline
+    textPointer++;
+    charPointer++;
+  }
+
+  return wrappedStyles;
+}
+
 let mpswitch = document.getElementById("multipage-switch");
 mpswitch.addEventListener('change', function () {
   canvas.multipage_enabled = mpswitch.checked;
