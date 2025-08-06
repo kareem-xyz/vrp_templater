@@ -545,7 +545,7 @@ class LabTemplate {
     const tablesUsed = [];
 
     while (remainingRows.length > 0) {
-      const table = this.findTableWithSpace(1); // Find table with at least 1 space
+      const table = this.findTableWithSpace(rowsData.length - 1); // Find table with at least 1 space
       
       if (!table) {
         throw new Error(`No available space for remaining ${remainingRows.length} rows`);

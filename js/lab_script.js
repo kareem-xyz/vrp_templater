@@ -278,6 +278,7 @@ function refreshLabDisplay(labId) {
 
 /**
  * Consolidate labs - move labs from higher numbered tables to fill gaps in lower numbered tables
+ * FIXED VERSION - properly handles occupancy tracking
  */
 function consolidateLabs() {
   const tables = labTemplate.getAllTables().sort((a, b) => a.id.localeCompare(b.id));
@@ -308,13 +309,28 @@ function consolidateLabs() {
             labData.push(sourceTable.getRow(rowIdx));
           }
           
-          // Remove from source table
+          // Get the target position BEFORE removing from source
+          const targetStartRow = targetTable.getFirstEmptyRow();
+          
+          // Remove from source table (this clears occupancy)
           sourceTable.removeLab(labId);
           
-          // Add to target table
-          targetTable.insertLabRows(labId, labData);
+          // Add to target table manually with proper occupancy tracking
+          const insertedRows = [];
+          for (let i = 0; i < labData.length; i++) {
+            const rowIndex = targetTable.insertRow(labData[i], targetStartRow + i, labId);
+            insertedRows.push(rowIndex);
+          }
+          
+          // CRITICAL FIX: Update the lab occupancy properly after insertion
+          targetTable.labOccupancy.set(labId, {
+            startRow: targetStartRow,
+            endRow: targetStartRow + labData.length - 1,
+            rowIndices: insertedRows
+          });
           
           console.log(`Moved lab ${labId} from table ${sourceTable.id} to ${targetTable.id}`);
+          console.log(`New occupancy for ${labId}:`, targetTable.getLabOccupancy(labId));
           movesMade = true;
           
           // If target table becomes full, move to next target
@@ -329,12 +345,103 @@ function consolidateLabs() {
     }
   }
 
+  // ADDITIONAL FIX: After consolidation, verify and rebuild occupancy for all tables
   if (movesMade) {
+    rebuildAllOccupancy();
     showLabMessage('Labs consolidated successfully', 'success');
     return true;
   }
   
   return false;
+}
+
+/**
+ * Rebuild occupancy tracking for all tables - ensures consistency
+ */
+function rebuildAllOccupancy() {
+  labTemplate.getAllTables().forEach(table => {
+    rebuildTableOccupancy(table);
+  });
+}
+
+/**
+ * Rebuild occupancy tracking for a specific table by scanning for lab titles
+ */
+function rebuildTableOccupancy(table) {
+  const nameColumn = table.getColumn('name');
+  if (!nameColumn) return;
+  
+  // Clear existing occupancy
+  table.labOccupancy.clear();
+  
+  let currentLabId = null;
+  let currentStartRow = -1;
+  let currentRows = [];
+  
+  // Scan through all rows looking for lab patterns
+  for (let i = 0; i < nameColumn.getCurrentRowCount(); i++) {
+    const nameValue = nameColumn.getData(i).trim();
+    
+    // Check if this is a lab title row (starts with ">>" or ">")
+    if (nameValue.startsWith('>>') || nameValue.startsWith('>')) {
+      // If we were tracking a previous lab, finalize it
+      if (currentLabId && currentStartRow >= 0) {
+        table.labOccupancy.set(currentLabId, {
+          startRow: currentStartRow,
+          endRow: i - 1, // Previous row was the end
+          rowIndices: currentRows
+        });
+      }
+      
+      // Start tracking new lab
+      // Extract lab ID from title - you may need to adjust this logic
+      const labTitle = nameValue.replace(/^>+\s*/, '');
+      currentLabId = findLabIdByTitle(labTitle);
+      currentStartRow = i;
+      currentRows = [i];
+      
+    } else if (currentLabId && nameValue.trim() !== '') {
+      // This is a data row for the current lab
+      currentRows.push(i);
+      
+    } else if (currentLabId && nameValue.trim() === '') {
+      // Empty row - end of current lab
+      if (currentStartRow >= 0) {
+        table.labOccupancy.set(currentLabId, {
+          startRow: currentStartRow,
+          endRow: i,
+          rowIndices: currentRows.concat([i]) // Include the empty spacer
+        });
+      }
+      currentLabId = null;
+      currentStartRow = -1;
+      currentRows = [];
+    }
+  }
+  
+  // Handle case where table ends with a lab (no empty spacer)
+  if (currentLabId && currentStartRow >= 0) {
+    table.labOccupancy.set(currentLabId, {
+      startRow: currentStartRow,
+      endRow: nameColumn.getCurrentRowCount() - 1,
+      rowIndices: currentRows
+    });
+  }
+  
+  console.log(`Rebuilt occupancy for table ${table.id}:`, Object.fromEntries(table.labOccupancy));
+}
+
+/**
+ * Helper function to find lab ID by title
+ */
+function findLabIdByTitle(title) {
+  for (const lab of Object.values(availableLabs)) {
+    if (lab.title === title) {
+      return lab.id;
+    }
+  }
+  // Fallback: return a sanitized version of the title
+  return title.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
 }
 
 /**
@@ -413,7 +520,7 @@ function addLabData(labId) {
     consolidateLabs();
     
     // Check if we have any tables with space
-    const availableTable = labTemplate.findTableWithSpace(1);
+    const availableTable = labTemplate.findTableWithSpace(rowsData.length);
     if (!availableTable) {
       throw new Error('No tables have available space');
     }
