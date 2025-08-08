@@ -334,33 +334,38 @@ class LabTable {
   /**
    * Remove a lab's data from the table
    */
-  removeLab(labId) {
-    if (!this.labOccupancy.has(labId)) {
-      console.warn(`Lab ${labId} not found in table ${this.id}`);
-      return false;
-    }
-
-    const occupancy = this.labOccupancy.get(labId);
-    const columns = this.getAllColumns();
-
-    // Clear data from all columns for the lab's rows
-    const indices = occupancy.rowIndices;
-    if (!indices || indices.length === 0) return;
-
-    const min = Math.min(...indices);
-    const max = Math.max(...indices);
-
-    Object.values(columns).forEach(column => {
-      if (column) {
-        column.clearDataRange(min, max);
-      }
-    });
-
-    // Remove lab from occupancy tracking
-    this.labOccupancy.delete(labId);
-    
-    return true;
+removeLab(labId) {
+  if (!this.labOccupancy.has(labId)) {
+    console.warn(`Lab ${labId} not found in table ${this.id}`);
+    return false;
   }
+
+  const occupancy = this.labOccupancy.get(labId);
+  const min = Math.min(...occupancy.rowIndices);
+  const max = Math.max(...occupancy.rowIndices);
+  const removedCount = max - min + 1;
+
+  const columns = this.getAllColumns();
+  Object.values(columns).forEach(column => {
+    if (column) {
+      column.clearDataRange(min, max);
+    }
+  });
+
+  // Remove lab from tracking
+  this.labOccupancy.delete(labId);
+
+  // FIX: adjust all labs after this block
+  this.labOccupancy.forEach((occ, id) => {
+    if (occ.startRow > max) {
+      occ.startRow -= removedCount;
+      occ.endRow -= removedCount;
+      occ.rowIndices = occ.rowIndices.map(i => i - removedCount);
+    }
+  });
+
+  return true;
+}
 
   /**
    * Get row data
