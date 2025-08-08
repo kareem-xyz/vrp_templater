@@ -202,63 +202,57 @@ function escapeHtml(text) {
  * Update lab data when input field changes
  */
 
-// Debug version of updateLabData to identify the mapping issue
-function updateLabData(labId, rowIndex, fieldType, newValue) {
+function updateLabData(labId, uiRowIndex, fieldType, newValue) {
   if (!activeLabs.has(labId)) {
     console.warn(`Lab ${labId} is not active`);
     return;
   }
 
   try {
-    // Find tables containing this lab
     const tablesWithLab = labTemplate.getTablesWithLab(labId);
-    
     if (tablesWithLab.length === 0) {
       console.warn(`Lab ${labId} not found in any tables`);
       return;
     }
 
-    console.log(`Updating ${labId} UI row ${rowIndex} field ${fieldType} to "${newValue}"`);
-
-    let previousTableIndex = 0;
-    let wrapped = 1; // takes care of title and continous tables.
-    let inserted = false;
+    // Flatten all occupied rows for this lab across tables
+    let allRows = [];
     tablesWithLab.forEach(({ table, occupancy }) => {
-      console.log(`Table ${table.id} occupancy:`, occupancy);
-      
-      // The lab data structure is: [title_row, data_row_0, data_row_1, ..., empty_spacer]
-      // UI rowIndex 0 = data_row_0 (which is occupancy.startRow + 1)
-      // UI rowIndex 1 = data_row_1 (which is occupancy.startRow + 2)
+      allRows.push({ table, rowIndices: occupancy.rowIndices });
+    });
 
-      targetRowIndex = occupancy.startRow + wrapped + rowIndex - previousTableIndex;
-      
-      console.log(`Lab Data row ${rowIndex} maps to table row ${targetRowIndex}`);
-      
-      // Make sure we're within the data rows (not title or spacer)
-      if (!inserted && targetRowIndex >= occupancy.startRow && targetRowIndex <= occupancy.endRow) {
+    // Skip title row: UI index 0 = first test row
+    const targetIndex = uiRowIndex + 1; 
+    let found = false;
+
+    for (const { table, rowIndices } of allRows) {
+      if (targetIndex < rowIndices.length) {
+        const targetRow = rowIndices[targetIndex];
         const column = table.getColumn(fieldType);
         if (column) {
-          column.insertData(targetRowIndex, newValue);
-          console.log(`✓ Successfully updated ${labId} table ${table.id} row ${targetRowIndex} ${fieldType}`);
+          column.insertData(targetRow, newValue);
+          console.log(`✓ Updated ${labId} table ${table.id} row ${targetRow} ${fieldType}`);
         } else {
           console.error(`✗ Column ${fieldType} not found in table ${table.id}`);
         }
-        inserted = true;
-      } 
-      else if (targetRowIndex > 21) {
-        previousTableIndex = occupancy.endRow - occupancy.startRow;
-        wrapped = 0;
+        found = true;
+        break;
+      } else {
+        // Move to next table's portion
+        targetIndex -= rowIndices.length;
       }
-      else {
-        console.warn(`✗ Target row ${targetRowIndex} outside data range (${occupancy.startRow + 1} to ${occupancy.endRow - 1})`);
-      }
-    });
+    }
+
+    if (!found) {
+      console.warn(`Row index ${uiRowIndex} out of range for lab ${labId}`);
+    }
 
   } catch (error) {
     console.error(`Error updating lab data:`, error);
     showLabMessage(`Failed to update ${labId}: ${error.message}`, 'error');
   }
 }
+
 
 /**
  * Refresh the display for a specific lab
