@@ -288,7 +288,7 @@ function downloadImage() {
   
   const dataURL = canvas.toDataURL({
     format: 'png',
-    multiplier: 2 // Higher resolution export
+    multiplier: 4 // Higher resolution export
   });
   
   const a = document.createElement('a');
