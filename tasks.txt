@@ -1,9 +1,7 @@
 Multi Canvas:
-- The functions from the canvas-utils.js can be easily modified to work with a single canvas, rather than a universal one. This can be useful for the multipage functionality.
 
 Labs:
 - Embolden the Titles of each Lab.
-- Clear up the Show Summary and useless buttons.
 
 Necessary UI Things:
 - "Universal Formatting Buttons (B I -)" (Bold, Italics, and so on). Can map the buttons the add the points **, _, - around the highlighted text.
