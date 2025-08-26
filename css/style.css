@@ -14,15 +14,16 @@
   right: 10px;
 }
 
+/* ===== Dropdown labels ===== */
 .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=arial]::before,
 .ql-snow .ql-picker.ql-font .ql-picker-label[data-value=arial]::before {
-  content: 'Arial';
+  content: "Arial";
   font-family: Arial, sans-serif;
 }
 
 .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=arial-black]::before,
 .ql-snow .ql-picker.ql-font .ql-picker-label[data-value=arial-black]::before {
-  content: 'Arial Black';
+  content: "Arial Black";
   font-family: "Arial Black", sans-serif;
 }
 
@@ -61,3 +62,33 @@
   content: "Verdana";
   font-family: Verdana, sans-serif;
 }
+
+/* ===== Editor content ===== */
+.ql-font-serif {
+  font-family: serif;
+}
+.ql-font-arial {
+  font-family: Arial, sans-serif;
+}
+.ql-font-arial-black {
+  font-family: "Arial Black", sans-serif;
+}
+.ql-font-comic-sans-ms {
+  font-family: "Comic Sans MS", cursive, sans-serif;
+}
+.ql-font-courier-new {
+  font-family: "Courier New", monospace;
+}
+.ql-font-georgia {
+  font-family: Georgia, serif;
+}
+.ql-font-times-new-roman {
+  font-family: "Times New Roman", serif;
+}
+.ql-font-trebuchet-ms {
+  font-family: "Trebuchet MS", sans-serif;
+}
+.ql-font-verdana {
+  font-family: Verdana, sans-serif;
+}
+
