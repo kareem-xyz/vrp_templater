@@ -1,3 +1,5 @@
+# JSON used to extract the units that were paired with each title in the labs. This was useful for creating a separate units column.
+
 import json
 import re
 import os

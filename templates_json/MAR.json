@@ -34,7 +34,7 @@
       "skewX": 0,
       "skewY": 0,
       "fontFamily": "Arial",
-      "fontWeight": "bold",
+      "fontWeight": "normal",
       "fontSize": 66.27752639517345,
       "text": "Title 1",
       "underline": false,
@@ -45,7 +45,34 @@
       "lineHeight": 1.16,
       "textBackgroundColor": "",
       "charSpacing": 0,
-      "styles": {},
+      "styles" : {
+        "0": {
+            "0": {
+                "fontWeight": "bold"
+            },
+            "1": {
+                "fontWeight": "bold"
+            },
+            "2": {
+                "fontWeight": "bold"
+            },
+            "3": {
+                "fontWeight": "bold"
+            },
+            "4": {
+                "fontWeight": "bold"
+            },
+            "5": {
+                "fontWeight": "bold"
+            },
+            "6": {
+                "fontWeight": "bold"
+            },
+            "7": {
+                "fontWeight": "bold"
+            }
+        }
+      },
       "direction": "ltr",
       "path": null,
       "pathStartOffset": 0,
@@ -242,9 +269,9 @@
       "skewX": 0,
       "skewY": 0,
       "fontFamily": "Arial",
-      "fontWeight": "bold",
+      "fontWeight": "normal",
       "fontSize": 66.27752639517345,
-      "text": "",
+      "text": "Title 2",
       "underline": false,
       "overline": false,
       "linethrough": false,
@@ -253,7 +280,34 @@
       "lineHeight": 1.16,
       "textBackgroundColor": "",
       "charSpacing": 0,
-      "styles": {},
+      "styles" : {
+        "0": {
+            "0": {
+                "fontWeight": "bold"
+            },
+            "1": {
+                "fontWeight": "bold"
+            },
+            "2": {
+                "fontWeight": "bold"
+            },
+            "3": {
+                "fontWeight": "bold"
+            },
+            "4": {
+                "fontWeight": "bold"
+            },
+            "5": {
+                "fontWeight": "bold"
+            },
+            "6": {
+                "fontWeight": "bold"
+            },
+            "7": {
+                "fontWeight": "bold"
+            }
+        }
+      },
       "direction": "ltr",
       "path": null,
       "pathStartOffset": 0,
@@ -450,9 +504,9 @@
       "skewX": 0,
       "skewY": 0,
       "fontFamily": "Arial",
-      "fontWeight": "bold",
+      "fontWeight": "normal",
       "fontSize": 66.27752639517345,
-      "text": "",
+      "text": "Title 3",
       "underline": false,
       "overline": false,
       "linethrough": false,
@@ -461,7 +515,34 @@
       "lineHeight": 1.16,
       "textBackgroundColor": "",
       "charSpacing": 0,
-      "styles": {},
+      "styles" : {
+        "0": {
+            "0": {
+                "fontWeight": "bold"
+            },
+            "1": {
+                "fontWeight": "bold"
+            },
+            "2": {
+                "fontWeight": "bold"
+            },
+            "3": {
+                "fontWeight": "bold"
+            },
+            "4": {
+                "fontWeight": "bold"
+            },
+            "5": {
+                "fontWeight": "bold"
+            },
+            "6": {
+                "fontWeight": "bold"
+            },
+            "7": {
+                "fontWeight": "bold"
+            }
+        }
+      },
       "direction": "ltr",
       "path": null,
       "pathStartOffset": 0,
@@ -658,9 +739,9 @@
       "skewX": 0,
       "skewY": 0,
       "fontFamily": "Arial",
-      "fontWeight": "bold",
+      "fontWeight": "normal",
       "fontSize": 66.27752639517345,
-      "text": "",
+      "text": "Title 4",
       "underline": false,
       "overline": false,
       "linethrough": false,
@@ -669,7 +750,34 @@
       "lineHeight": 1.16,
       "textBackgroundColor": "",
       "charSpacing": 0,
-      "styles": {},
+      "styles" : {
+        "0": {
+            "0": {
+                "fontWeight": "bold"
+            },
+            "1": {
+                "fontWeight": "bold"
+            },
+            "2": {
+                "fontWeight": "bold"
+            },
+            "3": {
+                "fontWeight": "bold"
+            },
+            "4": {
+                "fontWeight": "bold"
+            },
+            "5": {
+                "fontWeight": "bold"
+            },
+            "6": {
+                "fontWeight": "bold"
+            },
+            "7": {
+                "fontWeight": "bold"
+            }
+        }
+      },
       "direction": "ltr",
       "path": null,
       "pathStartOffset": 0,

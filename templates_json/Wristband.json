@@ -34,7 +34,7 @@
       "skewX": 0,
       "skewY": 0,
       "fontFamily": "Arial",
-      "fontWeight": "bold",
+      "fontWeight": "normal",
       "fontSize": 37.654320000000006,
       "text": "Patient Name",
       "underline": false,
@@ -45,7 +45,52 @@
       "lineHeight": 1.16,
       "textBackgroundColor": "",
       "charSpacing": 0,
-      "styles": {},
+      "styles" : {
+                  "0": {
+                      "0": {
+                          "fontWeight": "bold"
+                      },
+                      "1": {
+                          "fontWeight": "bold"
+                      },
+                      "2": {
+                          "fontWeight": "bold"
+                      },
+                      "3": {
+                          "fontWeight": "bold"
+                      },
+                      "4": {
+                          "fontWeight": "bold"
+                      },
+                      "5": {
+                          "fontWeight": "bold"
+                      },
+                      "6": {
+                          "fontWeight": "bold"
+                      },
+                      "7": {
+                          "fontWeight": "bold"
+                      },
+                      "8": {
+                          "fontWeight": "bold"
+                      },
+                      "9": {
+                          "fontWeight": "bold"
+                      },
+                      "10": {
+                          "fontWeight": "bold"
+                      },
+                      "11": {
+                          "fontWeight": "bold"
+                      },
+                      "12": {
+                          "fontWeight": "bold"
+                      },
+                      "13": {
+                          "fontWeight": "bold"
+                      }
+                    }
+        },
       "direction": "ltr",
       "path": null,
       "pathStartOffset": 0,
@@ -190,7 +235,7 @@
       "skewX": 0,
       "skewY": 0,
       "fontFamily": "Arial",
-      "fontWeight": "bold",
+      "fontWeight": "normal",
       "fontSize": 30.123456,
       "text": "Dr. J. Smith",
       "underline": false,
@@ -201,7 +246,49 @@
       "lineHeight": 1.16,
       "textBackgroundColor": "",
       "charSpacing": 0,
-      "styles": {},
+      "styles" : {
+                  "0": {
+                      "0": {
+                          "fontWeight": "bold"
+                      },
+                      "1": {
+                          "fontWeight": "bold"
+                      },
+                      "2": {
+                          "fontWeight": "bold"
+                      },
+                      "3": {
+                          "fontWeight": "bold"
+                      },
+                      "4": {
+                          "fontWeight": "bold"
+                      },
+                      "5": {
+                          "fontWeight": "bold"
+                      },
+                      "6": {
+                          "fontWeight": "bold"
+                      },
+                      "7": {
+                          "fontWeight": "bold"
+                      },
+                      "8": {
+                          "fontWeight": "bold"
+                      },
+                      "9": {
+                          "fontWeight": "bold"
+                      },
+                      "10": {
+                          "fontWeight": "bold"
+                      },
+                      "11": {
+                          "fontWeight": "bold"
+                      },
+                      "12": {
+                          "fontWeight": "bold"
+                      }
+                  }
+        },
       "direction": "ltr",
       "path": null,
       "pathStartOffset": 0,
@@ -242,7 +329,7 @@
       "skewX": 0,
       "skewY": 0,
       "fontFamily": "Arial",
-      "fontWeight": "Bold",
+      "fontWeight": "normal",
       "fontSize": 22.592592,
       "text": "Emergency Department",
       "underline": false,
@@ -253,7 +340,70 @@
       "lineHeight": 1.16,
       "textBackgroundColor": "",
       "charSpacing": 0,
-      "styles": {},
+      "styles" : {
+                  "0": {
+                      "0": {
+                          "fontWeight": "bold"
+                      },
+                      "1": {
+                          "fontWeight": "bold"
+                      },
+                      "2": {
+                          "fontWeight": "bold"
+                      },
+                      "3": {
+                          "fontWeight": "bold"
+                      },
+                      "4": {
+                          "fontWeight": "bold"
+                      },
+                      "5": {
+                          "fontWeight": "bold"
+                      },
+                      "6": {
+                          "fontWeight": "bold"
+                      },
+                      "7": {
+                          "fontWeight": "bold"
+                      },
+                      "8": {
+                          "fontWeight": "bold"
+                      },
+                      "9": {
+                          "fontWeight": "bold"
+                      },
+                      "10": {
+                          "fontWeight": "bold"
+                      },
+                      "11": {
+                          "fontWeight": "bold"
+                      },
+                      "12": {
+                          "fontWeight": "bold"
+                      },
+                      "13": {
+                          "fontWeight": "bold"
+                      },
+                      "14": {
+                          "fontWeight": "bold"
+                      },
+                      "15": {
+                          "fontWeight": "bold"
+                      },
+                      "16": {
+                          "fontWeight": "bold"
+                      },
+                      "17": {
+                          "fontWeight": "bold"
+                      },
+                      "18": {
+                          "fontWeight": "bold"
+                      },
+                      "19": {
+                          "fontWeight": "bold"
+                      }
+                  }
+        },
       "direction": "ltr",
       "path": null,
       "pathStartOffset": 0,

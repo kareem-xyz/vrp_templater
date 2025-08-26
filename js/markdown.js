@@ -520,6 +520,7 @@ function fabricStylesToQuillDelta(text, styles, baseFontSize = 1) {
 
     // emit inline runs for the line content without the bullet prefix
     let i = contentStart;
+
     while (i < line.length) {
       const s = lineStyles[i] || {};
       let j = i + 1;

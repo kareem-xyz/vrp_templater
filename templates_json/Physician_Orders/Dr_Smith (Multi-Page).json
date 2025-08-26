@@ -9,7 +9,7 @@
       "originY": "top",
       "left": 209.57,
       "top": 65.97,
-      "width": 821.48,
+      "width": 815,
       "height": 75.64,
       "fill": "#052e48",
       "stroke": null,
@@ -37,7 +37,7 @@
       "fontFamily": "Arial",
       "fontWeight": "bold",
       "fontSize": 66.940113,
-      "text": "What is Lorem Ipsum?",
+      "text": "Title",
       "underline": false,
       "overline": false,
       "linethrough": false,
@@ -46,7 +46,25 @@
       "lineHeight": 1.16,
       "textBackgroundColor": "",
       "charSpacing": 0,
-      "styles": {},
+      "styles": {
+        "0": {        
+          "0": {
+          "fontWeight":"bold"
+          },
+          "1": {
+            "fontWeight":"bold"
+          },
+          "2": {
+            "fontWeight":"bold"
+          },
+          "3": {
+            "fontWeight":"bold"
+          },
+          "4": {
+            "fontWeight":"bold"
+          }
+        }
+      },
       "direction": "ltr",
       "path": null,
       "pathStartOffset": 0,
