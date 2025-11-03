@@ -1,9 +1,10 @@
 const Font = Quill.import('formats/font');
-Font.whitelist = [
-  'serif', 'arial', 'arial-black', 'comic-sans-ms',
-  'courier-new', 'georgia','times-new-roman',
-  'trebuchet-ms', 'verdana'
-];
+
+// Read fonts from default_settings if available, otherwise use fallback
+Font.whitelist = (typeof default_settings !== 'undefined' && default_settings && default_settings.fonts) 
+  ? default_settings.fonts.map(font => font.toLowerCase().replace(/\s+/g, '-'))
+  : ['serif', 'arial', 'arial-black', 'comic-sans-ms', 'courier-new', 'georgia', 'times-new-roman', 'trebuchet-ms', 'verdana', 'great-vibes'];
+
 Quill.register(Font, true);
 
 
@@ -211,168 +212,7 @@ function createStyleButtons(obj) {
       toggleBtn.className = 'btn btn-outline-primary btn-sm';
     }
   };
-
-  // // Style buttons group
-  // const group = document.createElement('div');
-  // group.className = 'btn-group btn-group-sm me-2';
-
-  // // Bold
-  // const boldBtn = document.createElement('a');
-  // boldBtn.innerHTML = '<strong>B</strong>';
-  // boldBtn.className = `btn btn-outline-secondary ${obj.fontWeight === 'bold' ? 'active' : ''}`;
-  // boldBtn.title = 'Toggle Bold';
-  // boldBtn.onclick = () => {
-  //   obj.set('fontWeight', obj.fontWeight === 'bold' ? 'normal' : 'bold');
-  //   canvas.renderAll();
-  //   boldBtn.className = `btn btn-outline-secondary ${obj.fontWeight === 'bold' ? 'active' : ''}`;
-  // };
-  // group.appendChild(boldBtn);
-
-  // // Italic
-  // const italicBtn = document.createElement('a');
-  // italicBtn.innerHTML = '<em>I</em>';
-  // italicBtn.className = `btn btn-outline-secondary ${obj.fontStyle === 'italic' ? 'active' : ''}`;
-  // italicBtn.title = 'Toggle Italic';
-  // italicBtn.onclick = () => {
-  //   obj.set('fontStyle', obj.fontStyle === 'italic' ? 'normal' : 'italic');
-  //   canvas.renderAll();
-  //   italicBtn.className = `btn btn-outline-secondary ${obj.fontStyle === 'italic' ? 'active' : ''}`;
-  // };
-  // group.appendChild(italicBtn);
-
-  // // Underline
-  // const underlineBtn = document.createElement('a');
-  // underlineBtn.innerHTML = '<u>U</u>';
-  // underlineBtn.className = `btn btn-outline-secondary ${obj.underline ? 'active' : ''}`;
-  // underlineBtn.title = 'Toggle Underline';
-  // underlineBtn.onclick = () => {
-  //   obj.set('underline', !obj.underline);
-  //   canvas.renderAll();
-  //   underlineBtn.className = `btn btn-outline-secondary ${obj.underline ? 'active' : ''}`;
-  // };
-  // group.appendChild(underlineBtn);
-
-  // // Center-align
-  // const alignBtn = document.createElement('a');
-  // alignBtn.innerText = 'C';
-  // alignBtn.className = `btn btn-outline-secondary ${obj.textAlign === 'center' ? 'active' : ''}`;
-  // alignBtn.title = 'Toggle Center Align';
-  // alignBtn.onclick = () => {
-  //   const newAlign = obj.textAlign === 'center' ? 'left' : 'center';
-  //   obj.set('textAlign', newAlign);
-  //   obj.set({
-  //     originX: newAlign === 'center' ? 'center' : 'left'
-  //   });
-  //   canvas.renderAll();
-  //   alignBtn.className = `btn btn-outline-secondary ${obj.textAlign === 'center' ? 'active' : ''}`;
-  // };
-  // group.appendChild(alignBtn);
-
-  // // Font family dropdown
-  // const fontDropdown = document.createElement('div');
-  // fontDropdown.className = 'dropdown me-2';
-
-  // const fontBtn = document.createElement('a');
-  // fontBtn.className = 'btn btn-outline-secondary btn-sm dropdown-toggle';
-  // fontBtn.setAttribute('data-bs-toggle', 'dropdown');
-  // fontBtn.setAttribute('aria-expanded', 'false');
-  // fontBtn.innerHTML = obj.fontFamily || 'Arial';
-  // fontBtn.title = 'Change Font Family';
-
-  // const fontMenu = document.createElement('ul');
-  // fontMenu.className = 'dropdown-menu';
-
-  // // Browser-friendly fonts
-  // const fonts = [
-  //               'Arial',
-  //               'Arial Black',
-  //               'Comic Sans MS',
-  //               'Courier New',
-  //               'Georgia',
-  //               'Impact',
-  //               'Times New Roman',
-  //               'Trebuchet MS',
-  //               'Verdana'
-  //               ];
-
-  // fonts.forEach(font => {
-  //   const li = document.createElement('li');
-  //   const link = document.createElement('a');
-  //   link.className = 'dropdown-item';
-  //   link.href = '#';
-  //   link.style.fontFamily = font;
-  //   link.innerText = font;
-  //   link.onclick = (e) => {
-  //     e.preventDefault();
-  //     obj.set('fontFamily', font);
-  //     canvas.renderAll();
-  //     fontBtn.innerHTML = font;
-  //   };
-  //   li.appendChild(link);
-  //   fontMenu.appendChild(li);
-  // });
-
-  // fontDropdown.appendChild(fontBtn);
-  // fontDropdown.appendChild(fontMenu);
-
-  // // Font size control
-  // const sizeContainer = document.createElement('div');
-  // sizeContainer.className = 'd-flex align-items-center gap-1 me-2';
-  
-  // const sizeLabel = document.createElement('small');
-  // sizeLabel.innerText = 'Size:';
-  // sizeLabel.className = 'text-muted';
-  
-  // const sizeInput = document.createElement('input');
-  // sizeInput.type = 'range';
-  // sizeInput.className = 'form-range';
-  // sizeInput.style.width = '100px';
-  // sizeInput.min = '1';
-  // sizeInput.max = '600';
-  // sizeInput.value = Math.round(obj.fontSize / currentImageScale);
-  // sizeInput.title = 'Font Size';
-  // sizeInput.oninput = () => {
-  //   const newSize = parseInt(sizeInput.value) * currentImageScale;
-  //   obj.set('fontSize', newSize);
-  //   if (obj.originalData) {
-  //     obj.originalData.fontSize = newSize;
-  //   }
-  //   canvas.renderAll();
-  //   sizeValue.innerText = sizeInput.value;
-  // };
-  
-  // const sizeValue = document.createElement('small');
-  // sizeValue.className = 'text-muted';
-  // sizeValue.innerText = sizeInput.value;
-  // sizeValue.style.minWidth = '25px';
-  
-  // sizeContainer.appendChild(sizeLabel);
-  // sizeContainer.appendChild(sizeInput);
-  // sizeContainer.appendChild(sizeValue);
-
-  // // Color picker
-  // const colorInput = document.createElement('input');
-  // colorInput.type = 'color';
-  // colorInput.className = 'form-control form-control-color';
-  // colorInput.style.width = '40px';
-  // colorInput.style.height = '32px';
-  // colorInput.value = obj.fill || '#000000';
-  // colorInput.title = 'Text Color';
-  // colorInput.onchange = () => {
-  //   obj.set('fill', colorInput.value);
-  //   canvas.renderAll();
-  // };
-
-  // // Add all elements to style container
-  // styleContainer.appendChild(group);
-  // styleContainer.appendChild(fontDropdown);
-  // styleContainer.appendChild(sizeContainer);
-  // styleContainer.appendChild(colorInput);
-
-  // // Add toggle button and style container to main container
-  // container.appendChild(toggleBtn);
-  // container.appendChild(styleContainer);
-
+  container.appendChild(toggleBtn);
   return container;
 }
 

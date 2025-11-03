@@ -256,24 +256,39 @@ function parseMarkdownToStyledText(mdText, fontsize=1) {
 // console.log(result.cleanText);
 // console.log(result.styles);
 // Replace parseMarkdownToStyledText function with this
-// Replace parseMarkdownToStyledText function with this
-// Map between Quill font keys and CSS font-family names
-const QUILL_FONT_TO_CSS = {
-  'arial': 'Arial',
-  'arial-black': 'Arial Black',
-  'comic-sans-ms': 'Comic Sans MS',
-  'courier-new': 'Courier New',
-  'georgia': 'Georgia',
-  'impact': 'Impact',
-  'times-new-roman': 'Times New Roman',
-  'trebuchet-ms': 'Trebuchet MS',
-  'verdana': 'Verdana',
-  'serif': 'serif',
-  'monospace': 'monospace'
-};
-const CSS_FONT_TO_QUILL = Object.fromEntries(
-  Object.entries(QUILL_FONT_TO_CSS).map(([k,v]) => [v, k])
-);
+// Map between Quill font keys and CSS font-family names - loaded from default_settings
+let QUILL_FONT_TO_CSS = {};
+let CSS_FONT_TO_QUILL = {};
+
+// Initialize font mappings from default_settings or use fallback
+function initializeFontMappings() {
+  if (typeof default_settings !== 'undefined' && default_settings && default_settings.fontMapping) {
+    QUILL_FONT_TO_CSS = default_settings.fontMapping;
+  } else {
+    // Fallback mapping if settings not available
+    QUILL_FONT_TO_CSS = {
+      'arial': 'Arial',
+      'arial-black': 'Arial Black',
+      'comic-sans-ms': 'Comic Sans MS',
+      'courier-new': 'Courier New',
+      'georgia': 'Georgia',
+      'impact': 'Impact',
+      'times-new-roman': 'Times New Roman',
+      'trebuchet-ms': 'Trebuchet MS',
+      'verdana': 'Verdana',
+      'great-vibes': 'Great Vibes',
+      'serif': 'serif',
+      'monospace': 'monospace'
+    };
+  }
+  
+  CSS_FONT_TO_QUILL = Object.fromEntries(
+    Object.entries(QUILL_FONT_TO_CSS).map(([k,v]) => [v, k])
+  );
+}
+
+// Initialize mappings
+initializeFontMappings();
 
 function parseQuillDeltaToStyledText(delta, baseFontSize = 1) {
   if (!delta || !delta.ops) return { cleanText: '', styles: {} };

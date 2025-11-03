@@ -14,6 +14,14 @@
   right: 10px;
 }
 
+/* ===== Custom Fonts ===== */
+@font-face {
+  font-family: 'Great Vibes';
+  src: url('./GreatVibes-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /* ===== Dropdown labels ===== */
 .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=arial]::before,
 .ql-snow .ql-picker.ql-font .ql-picker-label[data-value=arial]::before {
@@ -63,6 +71,12 @@
   font-family: Verdana, sans-serif;
 }
 
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value=great-vibes]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=great-vibes]::before {
+  content: "Great Vibes";
+  font-family: "Great Vibes", cursive;
+}
+
 /* ===== Editor content ===== */
 .ql-font-serif {
   font-family: serif;
@@ -90,5 +104,9 @@
 }
 .ql-font-verdana {
   font-family: Verdana, sans-serif;
+}
+
+.ql-font-great-vibes {
+  font-family: "Great Vibes", cursive;
 }
 

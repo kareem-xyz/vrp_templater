@@ -8,6 +8,15 @@ let multipage_template = false;
 let labs_enabled = false;
 let default_settings = null;
 
+// Load default settings
+fetchJSON("default_settings.json")
+  .then((data) => {
+    if (data) {
+      default_settings = data;
+      console.log("Default settings loaded:", default_settings);
+    }
+  });
+
 function main() {
 fetch('templates_json/templates.json')
   .then(res => res.json())
@@ -24,19 +33,7 @@ fetch('templates_json/templates.json')
     console.error("Failed to load template list:", err);
   });
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-  initializeCanvas();
-});
-
-// Example usage:
-const settings_path = "default_settings.json"; // Replace with your actual server URL
-fetchJSON(settings_path)
-  .then((data) => {
-    if (data) {
-      default_settings = data;
-    }
-  });
+initializeCanvas();
 
 }
 
@@ -161,4 +158,8 @@ function downloadImage({_canvas=null, title=null} = {}) {
   link.click();
 }
 
-main();
+
+// Initialize everything when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  main();
+});

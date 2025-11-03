@@ -13,10 +13,26 @@
                 "Comic Sans MS",
                 "Courier New",
                 "Georgia",
+                "Great Vibes",
                 "Helvetica",
                 "Impact",
                 "Times New Roman",
                 "Trebuchet MS",
                 "Verdana"
-            ]
+            ],
+    "fontMapping": {
+        "arial": "Arial",
+        "arial-black": "Arial Black",
+        "comic-sans-ms": "Comic Sans MS",
+        "courier-new": "Courier New",
+        "georgia": "Georgia",
+        "great-vibes": "Great Vibes",
+        "helvetica": "Helvetica",
+        "impact": "Impact",
+        "times-new-roman": "Times New Roman",
+        "trebuchet-ms": "Trebuchet MS",
+        "verdana": "Verdana",
+        "serif": "serif",
+        "monospace": "monospace"
+    }
 }
