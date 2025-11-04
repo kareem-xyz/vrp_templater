@@ -1,5 +1,3 @@
-let pagesArray = [];
-
 function confirmMultipage(fabricCanvas) {
   if (!fabricCanvas) {
     console.error("No Canvas object passed");
@@ -101,7 +99,6 @@ function processTextbox(wrappedLines, desiredHeight, lineHeights, wrappedStyles)
   return [TextBoxes, TextStyles];
 }
 
-
 function makeNextPageCanvas(fabricCanvas, objectTargetIndex, pageText, pageIndex, textstyle) {
   return new Promise((resolve) => {
     // Create the canvas element first
@@ -188,11 +185,7 @@ async function downloadCanvas(fabricCanvas=null) {
     fabricCanvas = canvas;
   }
 
-  if (confirmMultipage(fabricCanvas)) {
-    if (mpswitch.checked == false) {
-      alert("Cannot Download Multiple pages with multipage switch Off.");
-      return;
-    }
+  if (mpswitch.checked && confirmMultipage(fabricCanvas)) {
     // Refresh and Download multiple pages.
     const pages = await processPages();
     const length = pages.length;
@@ -200,11 +193,12 @@ async function downloadCanvas(fabricCanvas=null) {
     let title = `${fabricCanvas.title} (p${i+1}-${length})`;
     downloadImage({_canvas:pages[i], title:title});
     }
-    return;
+  }
+
+  else {
+    downloadImage(fabricCanvas);
   }
   
-  downloadImage(fabricCanvas);
-  return;
 }
 
 function UpdateCustomValues(fabricCanvas) {
@@ -222,8 +216,6 @@ function UpdateCustomValues(fabricCanvas) {
   fabricCanvas.getObjects().forEach(obj => {
     if (obj.type === "textbox" && obj.multipage_text == true) {
       mpdiv.hidden = false;
-      mpswitch.checked = true;
-      fabricCanvas.multipage_enabled = true;
 
       obj.set({
         multipage_height: obj.height,
@@ -252,12 +244,13 @@ function clearGeneratedPages() {
   HideMainCanvas(false);
   
   console.log("Cleared all generated pages");
-}
+} 
 
 async function refreshPages() {
   await processPages();
   console.log("Refreshed pages");
 }
+
 async function addPageIndex(canvas, pageObjectIndex, page_index, num_pages) {
   try {
   const objs = await canvas.getObjects()
@@ -326,8 +319,27 @@ function convertUnwrappedStylesToWrapped(textbox) {
   return wrappedStyles;
 }
 
-let mpswitch = document.getElementById("multipage-switch");
-mpswitch.addEventListener('change', function () {
+function updateMPSwitch(force=null) {
+  let mpswitch = document.getElementById("multipage-switch");
+  let refreshswitch = document.getElementById("multipage-refresh");
+
+  if (force !== null) {
+    mpswitch.checked = force;
+  }
+
+  let mp_mode_bool = mpswitch.checked; // true mode is multipage, false is single page
   canvas.multipage_enabled = mpswitch.checked;
+  refreshswitch.hidden = !mp_mode_bool;
+
+  if (mp_mode_bool) {
+    HideMainCanvas(true);
+    refreshPages();
+  }
+
+  else {
+    HideMainCanvas(false);
+    clearGeneratedPages();
+  }
+
   console.log("Multi-page mode:", canvas.multipage_enabled);
-});
+}

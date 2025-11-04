@@ -1,14 +1,3 @@
-const Font = Quill.import('formats/font');
-
-// Read fonts from default_settings if available, otherwise use fallback
-Font.whitelist = (typeof default_settings !== 'undefined' && default_settings && default_settings.fonts) 
-  ? default_settings.fonts.map(font => font.toLowerCase().replace(/\s+/g, '-'))
-  : ['serif', 'arial', 'arial-black', 'comic-sans-ms', 'courier-new', 'georgia', 'times-new-roman', 'trebuchet-ms', 'verdana', 'great-vibes'];
-
-Quill.register(Font, true);
-
-
-
 function addText(type = 'text') {
   if (!originalBgImg) {
     alert('Please upload an image first');
@@ -67,7 +56,6 @@ function addText(type = 'text') {
   const uiElement = makeTextUI(textObject, fieldCount);
   appendTextUI('fieldsPanel', uiElement);
 }
-
 
 function makeTextUI(obj, index = null) {
 
@@ -179,7 +167,6 @@ function makeTextUI(obj, index = null) {
   return wrapper;
 }
 
-
 function appendTextUI(containerId, htmlElement) {
   const panel = document.getElementById(containerId);
   panel.appendChild(htmlElement);
@@ -216,18 +203,18 @@ function createStyleButtons(obj) {
   return container;
 }
 
-  function getHeadingStyle(depth, fontsize=1) {
-    const fontSizes = {
-      1: 1.25,    // # - 1.25x size
-      2: 1.15,    // ## - 1.15x size
-      3: 1.10,    // ### - 1.10x size
-      4: 1.05,    // #### - 1.05x size
-      5: 1.025,   // ##### - 1.025x size
-      6: 1.0      // ###### - normal size
-    };
-    
-    return {
-      fontSize: fontsize * (fontSizes[depth] || 1.0),
-      fontWeight: 'bold'
-    };
-  }
+function getHeadingStyle(depth, fontsize=1) {
+  const fontSizes = {
+    1: 1.25,    // # - 1.25x size
+    2: 1.15,    // ## - 1.15x size
+    3: 1.10,    // ### - 1.10x size
+    4: 1.05,    // #### - 1.05x size
+    5: 1.025,   // ##### - 1.025x size
+    6: 1.0      // ###### - normal size
+  };
+  
+  return {
+    fontSize: fontsize * (fontSizes[depth] || 1.0),
+    fontWeight: 'bold'
+  };
+}

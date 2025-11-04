@@ -251,15 +251,6 @@ function parseMarkdownToStyledText(mdText, fontsize=1) {
   return htmlTokensToStyledText(tokens, fontsize);
 }
 
-// Usage example:
-// const result = parseMarkdownToStyledText(mdText);
-// console.log(result.cleanText);
-// console.log(result.styles);
-// Replace parseMarkdownToStyledText function with this
-// Map between Quill font keys and CSS font-family names - loaded from default_settings
-let QUILL_FONT_TO_CSS = {};
-let CSS_FONT_TO_QUILL = {};
-
 // Initialize font mappings from default_settings or use fallback
 function initializeFontMappings() {
   if (typeof default_settings !== 'undefined' && default_settings && default_settings.fontMapping) {
@@ -286,9 +277,6 @@ function initializeFontMappings() {
     Object.entries(QUILL_FONT_TO_CSS).map(([k,v]) => [v, k])
   );
 }
-
-// Initialize mappings
-initializeFontMappings();
 
 function parseQuillDeltaToStyledText(delta, baseFontSize = 1) {
   if (!delta || !delta.ops) return { cleanText: '', styles: {} };

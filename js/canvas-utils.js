@@ -1,5 +1,3 @@
-currentImageScale=1;
-
 // Initialize canvas with container constraints the same as canvas-box, which is constrained by Bootstrap col
 function initializeCanvas(cnvs=null) {
   const container = document.querySelector('.canvas-box');

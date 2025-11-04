@@ -1,46 +1,6 @@
-let canvas = new fabric.Canvas('canvas-0');
-let fieldCount = 0;
-const liveToggle = document.getElementById('livePreviewToggle');
-let originalBgImg = null;
-let originalImageData = null; // Store the base64 image data
-let multipage_enabled = false;
-let multipage_template = false;
-let labs_enabled = false;
-let default_settings = null;
-
-// Load default settings
-fetchJSON("default_settings.json")
-  .then((data) => {
-    if (data) {
-      default_settings = data;
-      console.log("Default settings loaded:", default_settings);
-    }
-  });
-
-function main() {
-fetch('templates_json/templates.json')
-  .then(res => res.json())
-  .then(files => {
-    const selector = document.getElementById('templateSelector');
-    files.forEach(file => {
-      const option = document.createElement('option');
-      option.value = file;
-      option.textContent = file.replace('.json', '').replace(/_/g, ' ');
-      selector.appendChild(option);
-    });
-  })
-  .catch(err => {
-    console.error("Failed to load template list:", err);
-  });
-
-initializeCanvas();
-
-}
-
 function loadTemplate(selectedFile="") {
+  updateMPSwitch(false);
   initializeCanvas();
-  clearGeneratedPages();
-  HideMainCanvas(false);
 
   // If passed filename
   if (!selectedFile){
@@ -123,7 +83,7 @@ function loadTemplate(selectedFile="") {
       });
     });
 
-    canvas.renderAll();
+  canvas.renderAll();
 }
 
 function populateInputFields() {
@@ -157,9 +117,3 @@ function downloadImage({_canvas=null, title=null} = {}) {
   link.download = finalTitle + ".png";
   link.click();
 }
-
-
-// Initialize everything when page loads
-document.addEventListener('DOMContentLoaded', function() {
-  main();
-});

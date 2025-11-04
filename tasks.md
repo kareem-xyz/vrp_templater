@@ -1,9 +1,8 @@
 Right Now:
 ---
 - ~~Removing Signature from Physician orders (COMPLETE)~~
-- Update all other templates to utilize their images instead of base64. Therefore one representaion is used
-- fix bug with not downloading images when multi page is disabled
-
+- ~~Update all other templates to utilize their images instead of base64. Therefore one representaion is used~~
+- ~~fix bug with not downloading images when multi page is disabled~~
 Next
 ---
 
