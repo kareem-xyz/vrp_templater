@@ -271,7 +271,7 @@
     "skewY": 0,
     "cropX": 0,
     "cropY": 0,
-    "src":"archive/templates_images/Dr_Smith.png",
+    "src": "templates_png/Dr_Smith.png",
     "crossOrigin": null,
     "filters": []
   }
