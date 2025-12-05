@@ -107,13 +107,20 @@ function generateImage() {
   canvas.renderAll();
 }
 
-function downloadImage({_canvas=null, title=null} = {}) {
-  if (!_canvas) {_canvas = canvas}
-  const dataURL = _canvas.toDataURL({ format: 'png', multiplier: 4 });
+function downloadImage({_canvas=canvas, title=null, type=default_settings?.file_format, _link=null} = {}) {
+  if (_link) {
+    _link.click();
+  }
+  const link = generateURL(_canvas, title, type)
+  link.click();
+}
+
+function generateURL({_canvas=canvas, title=null, type=default_settings?.file_format} = {}) {
+  const dataURL = _canvas.toDataURL({ format: type, multiplier: 4});
   const link = document.createElement('a');
   link.href = dataURL;
-  let finalTitle = title || _canvas.title || "chart";
-  finalTitle = finalTitle.replace(".json","").replace("(Multi-Page)","");
-  link.download = finalTitle + ".png";
-  link.click();
+  let filename = title || _canvas.title;
+  filename = filename.replace(".json","").replace("(Multi-Page)","");
+  link.download = `${filename}.${type}`;
+  return link
 }
