@@ -1,0 +1,20 @@
+<!-- Multipage modal fragment using Bootstrap modal markup. JS will fetch and populate #mp-grid and wire actions -->
+<div class="modal fade" id="multipage-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="mp-title">Preview Pages</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex justify-content-end mb-2">
+          <button id="mp-download-all" class="btn btn-sm btn-primary me-2">Download All</button>
+          <button id="mp-download-zip" class="btn btn-sm btn-secondary">Download ZIP</button>
+        </div>
+        <div id="mp-grid" class="row g-3" aria-live="polite"></div>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>

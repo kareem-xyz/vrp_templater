@@ -1,0 +1,10 @@
+/* Minimal overrides: only control the preview image sizing inside Bootstrap card */
+.mp-img{
+  width: 85%;
+  max-height: 160px;
+  object-fit: contain;
+  display: block;
+  margin: 8px auto;
+  border: 1px solid #ccc;
+  background: #fff;
+}

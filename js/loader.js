@@ -107,20 +107,40 @@ function generateImage() {
   canvas.renderAll();
 }
 
-function downloadImage({_canvas=canvas, title=null, type=default_settings?.file_format, _link=null} = {}) {
+function downloadImage({ _canvas = canvas, title = null, format = default_settings?.file_format, _link = null } = {}) {
   if (_link) {
     _link.click();
+    return;
   }
-  const link = generateURL(_canvas, title, type)
+  const link = generateURL({ _canvas, title, format });
   link.click();
 }
 
-function generateURL({_canvas=canvas, title=null, type=default_settings?.file_format} = {}) {
-  const dataURL = _canvas.toDataURL({ format: type, multiplier: 4});
+function generateURL({ _canvas = canvas, title = null, format = default_settings?.file_format } = {}) {
+  const dataURL = (_canvas && typeof _canvas.toDataURL === 'function')
+    ? _canvas.toDataURL({ format, multiplier: 4 })
+    : '';
   const link = document.createElement('a');
   link.href = dataURL;
-  let filename = title || _canvas.title;
-  filename = filename.replace(".json","").replace("(Multi-Page)","");
-  link.download = `${filename}.${type}`;
-  return link
+
+  let filename = title || (_canvas && _canvas.title) || 'chart';
+  filename = sanitizeFilename(filename);
+  link.download = `${filename}.${format}`;
+  return link;
 }
+
+// sanitize filename to avoid problematic characters in downloads / zip entries
+const sanitizeFilename = (name) => {
+  if (!name) return 'chart';
+  // remove .json and multipage markers first
+  let s = String(name).replace('.json', '').replace('(Multi-Page)', '');
+  // strip path segments (no folders inside zip entries)
+  s = s.replace(/.*[\\/]/, '');
+  // remove characters not safe for filenames on most OSes
+  s = s.replace(/[\u0000-\u001F\/:*?"<>|]/g, '');
+  // collapse whitespace and trim
+  s = s.replace(/\s+/g, ' ').trim();
+  // avoid empty or dot-only names
+  if (!s || /^\.+$/.test(s)) s = 'chart';
+  return s;
+};

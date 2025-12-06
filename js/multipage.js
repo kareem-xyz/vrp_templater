@@ -180,25 +180,179 @@ function cloneObjectsToNewPage(fabricCanvas, newCanvas, objectTargetIndex, pageT
   });
 }
 
-async function downloadCanvas(fabricCanvas=null) {
-  if (!fabricCanvas) {
-    fabricCanvas = canvas;
-  }
+async function downloadCanvas(fabricCanvas=canvas) {
 
+  // If multipage is enabled and template confirms, generate pages but do NOT auto-download.
+  // Instead show a modal with previews and options to download all or individual pages.
   if (mpswitch.checked && confirmMultipage(fabricCanvas)) {
-    // Refresh and Download multiple pages.
-    const pages = await processPages();
-    const length = pages.length;
-    for (let i = 0; i < length; i++) {
-    let title = `${fabricCanvas.title} (p${i+1}-${length})`;
-    downloadImage({_canvas:pages[i], title:title});
+    const pages = await processPages(fabricCanvas);
+    if (!pages || pages.length === 0) {
+      console.warn('No pages generated for multipage download');
+      return false;
     }
+
+    // Show modal with previews and controls
+    createMultipageModal(pages, fabricCanvas?.title);
+    return true;
   }
 
-  else {
-    downloadImage(fabricCanvas);
+  // Single page -> use existing download flow (object-style)
+  downloadImage({ _canvas: fabricCanvas });
+}
+
+// Create a simple modal that lists generated pages with preview and download controls.
+function createMultipageModal(pages, titleBase='chart') {
+  closeMultipageModal();
+
+  // ensure CSS is loaded once
+  if (!document.getElementById('multipage-modal-css')) {
+    const link = document.createElement('link');
+    link.id = 'multipage-modal-css';
+    link.rel = 'stylesheet';
+    link.href = 'css/multipage-modal.css';
+    document.head.appendChild(link);
   }
-  
+
+  // Load modal HTML and card template from html/elements
+  Promise.all([
+    fetch('html/elements/multipage_modal.html').then(r => r.text()),
+    fetch('html/elements/multipage_card.html').then(r => r.text())
+  ]).then(([modalHtml, cardHtml]) => {
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = modalHtml.trim();
+    const modal = wrapper.querySelector('#multipage-modal');
+    const grid = modal.querySelector('#mp-grid');
+
+    // For each page, clone the card template and fill values
+    pages.forEach((pageCanvas, idx) => {
+      const cardWrapper = document.createElement('div');
+      cardWrapper.innerHTML = cardHtml.trim();
+      const card = cardWrapper.firstElementChild;
+      if (!card) return;
+
+      const previewLink = (typeof generateURL === 'function')
+        ? generateURL({ _canvas: pageCanvas, title: `${titleBase} (p${idx+1}-${pages.length})` })
+        : null;
+      const dataUrl = previewLink ? previewLink.href : (pageCanvas.toDataURL ? pageCanvas.toDataURL({ format: 'png' }) : null);
+
+      const img = card.querySelector('.mp-img');
+      if (img && dataUrl) img.src = dataUrl;
+
+      const lbl = card.querySelector('.mp-label');
+      if (lbl) lbl.textContent = `Page ${idx+1}`;
+
+      const dl = card.querySelector('.mp-download');
+      if (dl) dl.onclick = () => downloadImage({ _canvas: pageCanvas, title: `${titleBase} (p${idx+1}-${pages.length})` });
+
+      grid.appendChild(card);
+    });
+
+    const downloadAllBtn = modal.querySelector('#mp-download-all');
+    if (downloadAllBtn) downloadAllBtn.onclick = () => downloadAllPages(pages, titleBase);
+  const downloadZipBtn = modal.querySelector('#mp-download-zip');
+  if (downloadZipBtn) downloadZipBtn.onclick = () => downloadAllPages(pages=pages, titleBase=titleBase, zip=true);
+
+    document.body.appendChild(modal);
+
+    // Show using Bootstrap modal and remove element after hidden
+    try {
+      const bsModal = new bootstrap.Modal(modal);
+      modal.addEventListener('hidden.bs.modal', () => modal.remove());
+      bsModal.show();
+    } catch (e) {
+      // If bootstrap isn't available, fallback to just keeping the element visible
+    }
+  });
+}
+
+function closeMultipageModal() {
+  const existing = document.getElementById('multipage-modal');
+  if (!existing) return;
+  try {
+    const inst = bootstrap.Modal.getInstance(existing);
+    if (inst) inst.hide();
+    else existing.remove();
+  } catch (e) {
+    existing.remove();
+  }
+}
+
+function downloadAllPages(pages, titleBase, zip = false, format = default_settings?.file_format) {
+  if (zip) {
+    return downloadAllZip(pages, titleBase, format);
+  }
+
+  if (!pages || pages.length === 0) return;
+  for (let i = 0; i < pages.length; i++) {
+    downloadImage({ _canvas: pages[i], title: `${titleBase} (p${i+1}-${pages.length})`, format: format});
+  }
+}
+
+// Create a zip of all pages and trigger a single download. Loads JSZip from CDN if needed.
+async function downloadAllZip(pages, titleBase="chart", format = default_settings?.file_format) {
+  if (!pages || pages.length === 0) return;
+
+  // Ensure fflate is available: try local vendor first, then CDN fallback
+  if (typeof fflate === 'undefined') {
+    // try local vendor
+    await new Promise((resolve) => {
+      const s = document.createElement('script');
+      s.src = 'js/vendor/fflate.min.js';
+      s.onload = resolve;
+      s.onerror = resolve; // continue to CDN fallback on error
+      document.head.appendChild(s);
+    });
+  }
+
+  if (typeof fflate === 'undefined') {
+    console.error('No zip library available (fflate)');
+    return;
+  }
+
+  // Convert dataURL to Uint8Array
+  const dataUrlToUint8 = async (dataUrl) => {
+    const res = await fetch(dataUrl);
+    const ab = await res.arrayBuffer();
+    return new Uint8Array(ab);
+  };
+
+  const files = {};
+  await Promise.all(pages.map(async (pageCanvas, i) => {
+    const title = `${titleBase} (p${i+1}-${pages.length})`;
+    // Reuse generateURL to get both data URL and sanitized filename
+    let dataUrl = null;
+    let filename = null;
+
+    const link = generateURL({ _canvas: pageCanvas, title, format });
+    dataUrl = link.href;
+    filename = link.download || "chart";
+
+    if (!dataUrl && pageCanvas.toDataURL) {
+      dataUrl = pageCanvas.toDataURL({ format });
+    }
+    if (!dataUrl) return;
+
+    const u8 = await dataUrlToUint8(dataUrl);
+    files[filename] = u8;
+  }));
+
+  // Use fflate to zip synchronously
+  try {
+    const zipped = fflate.zipSync(files);
+    const blob = new Blob([zipped], { type: 'application/zip' });
+    const a = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    a.href = url;
+    // Use generateURL to produce a sanitized zip name when possible
+    let zipName = sanitizeFilename(titleBase) + ".zip";
+    a.download = zipName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  } catch (e) {
+    console.error('Error zipping files', e);
+  }
 }
 
 function UpdateCustomValues(fabricCanvas) {
